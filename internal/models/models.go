@@ -10,7 +10,7 @@ type Launch struct {
 	Title       string     `json:"title" db:"title"`
 	Description string     `json:"description" db:"description"`
 	LaunchDate  time.Time  `json:"launch_date" db:"launch_date"`
-	Status      string     `json:"status" db:"status"` // draft, planned, in-progress, launched, cancelled
+	Status      string     `json:"status" db:"status"`     // draft, planned, in-progress, launched, cancelled
 	Priority    string     `json:"priority" db:"priority"` // low, medium, high, critical
 	OwnerID     int64      `json:"owner_id" db:"owner_id"`
 	TeamID      *int64     `json:"team_id,omitempty" db:"team_id"`
@@ -43,7 +43,7 @@ type Task struct {
 	Title       string     `json:"title" db:"title"`
 	Description string     `json:"description" db:"description"`
 	AssigneeID  *int64     `json:"assignee_id,omitempty" db:"assignee_id"`
-	Status      string     `json:"status" db:"status"` // todo, in-progress, done, blocked
+	Status      string     `json:"status" db:"status"`     // todo, in-progress, done, blocked
 	Priority    string     `json:"priority" db:"priority"` // low, medium, high
 	DueDate     *time.Time `json:"due_date,omitempty" db:"due_date"`
 	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
@@ -84,14 +84,14 @@ type TeamMember struct {
 
 // Comment represents a comment on a launch, milestone, or task
 type Comment struct {
-	ID          int64      `json:"id" db:"id"`
-	EntityType  string     `json:"entity_type" db:"entity_type"` // launch, milestone, task
-	EntityID    int64      `json:"entity_id" db:"entity_id"`
-	UserID      int64      `json:"user_id" db:"user_id"`
-	Content     string     `json:"content" db:"content"`
-	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at" db:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
+	ID         int64      `json:"id" db:"id"`
+	EntityType string     `json:"entity_type" db:"entity_type"` // launch, milestone, task
+	EntityID   int64      `json:"entity_id" db:"entity_id"`
+	UserID     int64      `json:"user_id" db:"user_id"`
+	Content    string     `json:"content" db:"content"`
+	CreatedAt  time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at" db:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }
 
 // LaunchTag represents tags associated with launches
@@ -175,18 +175,18 @@ type HealthResponse struct {
 
 // Company represents a space company
 type Company struct {
-	ID          int64      `json:"id" db:"id"`
-	Name        string     `json:"name" db:"name"`
-	Description string     `json:"description" db:"description"`
-	Founded     int        `json:"founded" db:"founded"`
-	Founder     string     `json:"founder" db:"founder"`
-	Headquarters string    `json:"headquarters" db:"headquarters"`
-	Employees   int        `json:"employees" db:"employees"`
-	Website     string     `json:"website" db:"website"`
-	ImageURL    string     `json:"imageUrl" db:"image_url"`
-	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at" db:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
+	ID           int64      `json:"id" db:"id"`
+	Name         string     `json:"name" db:"name"`
+	Description  string     `json:"description" db:"description"`
+	Founded      int        `json:"founded" db:"founded"`
+	Founder      string     `json:"founder" db:"founder"`
+	Headquarters string     `json:"headquarters" db:"headquarters"`
+	Employees    int        `json:"employees" db:"employees"`
+	Website      string     `json:"website" db:"website"`
+	ImageURL     string     `json:"imageUrl" db:"image_url"`
+	CreatedAt    time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at" db:"updated_at"`
+	DeletedAt    *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }
 
 // Rocket represents a rocket
@@ -265,14 +265,14 @@ type CreateCompanyRequest struct {
 
 // CreateRocketRequest represents the request to create a rocket
 type CreateRocketRequest struct {
-	Name        string   `json:"name" binding:"required"`
-	Description string   `json:"description"`
-	Height      float64  `json:"height"`
-	Diameter    float64  `json:"diameter"`
-	Mass        float64  `json:"mass"`
-	CompanyID   *int64   `json:"company_id"`
-	ImageURL    string   `json:"imageUrl"`
-	Active      bool     `json:"active"`
+	Name        string  `json:"name" binding:"required"`
+	Description string  `json:"description"`
+	Height      float64 `json:"height"`
+	Diameter    float64 `json:"diameter"`
+	Mass        float64 `json:"mass"`
+	CompanyID   *int64  `json:"company_id"`
+	ImageURL    string  `json:"imageUrl"`
+	Active      bool    `json:"active"`
 }
 
 // CreateLaunchBaseRequest represents the request to create a launch base
