@@ -552,3 +552,185 @@ curl -X PUT http://localhost:8080/api/v1/launches/1 \
 ```bash
 curl http://localhost:8080/api/v1/launches?status=in-progress&limit=20
 ```
+
+---
+
+## Rocket Launch Tracking APIs
+
+The following APIs support the frontend rocket launch tracking application.
+
+### Rockets
+
+#### GET /api/v1/rockets
+
+List all rockets.
+
+**Query Parameters:**
+- `active` (optional): Filter by active status (true/false)
+- `limit` (optional): Maximum number of results (default: 50, max: 100)
+- `offset` (optional): Number of results to skip (default: 0)
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Falcon 9",
+    "description": "A reusable rocket",
+    "height": 70.0,
+    "diameter": 3.7,
+    "mass": 549054.0,
+    "company": "SpaceX",
+    "imageUrl": "https://example.com/falcon9.jpg",
+    "active": true
+  }
+]
+```
+
+#### POST /api/v1/rockets
+
+Create a new rocket.
+
+#### GET /api/v1/rockets/:id
+
+Get rocket details by ID.
+
+#### PUT /api/v1/rockets/:id
+
+Update a rocket.
+
+#### DELETE /api/v1/rockets/:id
+
+Delete a rocket.
+
+---
+
+### Companies
+
+#### GET /api/v1/companies
+
+List all space companies.
+
+#### POST /api/v1/companies
+
+Create a new company.
+
+#### GET /api/v1/companies/:id
+
+Get company details by ID.
+
+#### PUT /api/v1/companies/:id
+
+Update a company.
+
+#### DELETE /api/v1/companies/:id
+
+Delete a company.
+
+---
+
+### Launch Bases
+
+#### GET /api/v1/launch-bases
+
+List all launch sites.
+
+#### POST /api/v1/launch-bases
+
+Create a new launch base.
+
+#### GET /api/v1/launch-bases/:id
+
+Get launch base details by ID.
+
+#### PUT /api/v1/launch-bases/:id
+
+Update a launch base.
+
+#### DELETE /api/v1/launch-bases/:id
+
+Delete a launch base.
+
+---
+
+### Rocket Launches
+
+#### GET /api/v1/rocket-launches
+
+List all rocket launches.
+
+**Query Parameters:**
+- `status` (optional): Filter by status (`scheduled`, `successful`, `failed`, `cancelled`)
+- `limit` (optional): Maximum number of results (default: 50, max: 100)
+- `offset` (optional): Number of results to skip (default: 0)
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Starlink Mission",
+    "date": "2025-10-23T10:30:00Z",
+    "rocket": "Falcon 9",
+    "launchBase": "Kennedy Space Center",
+    "status": "scheduled",
+    "description": "Deployment of Starlink satellites"
+  }
+]
+```
+
+#### POST /api/v1/rocket-launches
+
+Create a new rocket launch.
+
+#### GET /api/v1/rocket-launches/:id
+
+Get rocket launch details by ID.
+
+#### PUT /api/v1/rocket-launches/:id
+
+Update a rocket launch.
+
+#### DELETE /api/v1/rocket-launches/:id
+
+Delete a rocket launch.
+
+---
+
+### News
+
+#### GET /api/v1/news
+
+List all news articles.
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "title": "SpaceX Completes 200th Successful Landing",
+    "summary": "SpaceX has achieved another milestone...",
+    "content": "Full article content in markdown format...",
+    "date": "2025-10-20T12:00:00Z",
+    "url": "https://www.spacex.com",
+    "imageUrl": "https://example.com/news.jpg"
+  }
+]
+```
+
+#### POST /api/v1/news
+
+Create a new news article.
+
+#### GET /api/v1/news/:id
+
+Get news article details by ID.
+
+#### PUT /api/v1/news/:id
+
+Update a news article.
+
+#### DELETE /api/v1/news/:id
+
+Delete a news article.
+
