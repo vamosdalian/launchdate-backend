@@ -67,7 +67,8 @@ CREATE INDEX IF NOT EXISTS idx_rocket_launch_tags_launch_id ON rocket_launch_tag
 CREATE INDEX IF NOT EXISTS idx_rocket_launch_tags_text ON rocket_launch_tags(text);
 
 -- Create triggers for updated_at
-CREATE TRIGGER IF NOT EXISTS update_rocket_launch_missions_updated_at 
+DROP TRIGGER IF EXISTS update_rocket_launch_missions_updated_at ON rocket_launch_missions;
+CREATE TRIGGER update_rocket_launch_missions_updated_at 
     BEFORE UPDATE ON rocket_launch_missions 
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
