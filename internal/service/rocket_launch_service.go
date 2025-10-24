@@ -211,16 +211,9 @@ func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLa
 		Status:             "scheduled", // Default status
 	}
 
-	// Set provider, vehicle, and launch base IDs if available
-	if ext.Provider != nil {
-		launch.ProviderID = &ext.Provider.ID
-	}
-	if ext.Vehicle != nil {
-		launch.RocketID = &ext.Vehicle.ID
-	}
-	if ext.Pad != nil {
-		launch.LaunchBaseID = &ext.Pad.ID
-	}
+	// Note: We don't set ProviderID, RocketID, or LaunchBaseID because
+	// the external API IDs don't match our database IDs
+	// These should be linked manually or through a separate matching process
 
 	return launch
 }
