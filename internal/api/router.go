@@ -90,6 +90,7 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			rocketLaunches.GET("/:id", handler.GetRocketLaunch)
 			rocketLaunches.PUT("/:id", handler.UpdateRocketLaunch)
 			rocketLaunches.DELETE("/:id", handler.DeleteRocketLaunch)
+			rocketLaunches.POST("/sync", handler.SyncRocketLaunches)
 		}
 
 		// News
