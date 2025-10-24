@@ -18,7 +18,7 @@ func SetupRouter(handler *Handler) *gin.Engine {
 	// API v1
 	v1 := router.Group("/api/v1")
 	{
-		// Launches
+		// Launches (Product/Project Launches)
 		launches := v1.Group("/launches")
 		{
 			launches.GET("", handler.ListLaunches)
@@ -51,6 +51,56 @@ func SetupRouter(handler *Handler) *gin.Engine {
 
 		// Launch tasks
 		v1.GET("/launches/:launch_id/tasks", handler.ListLaunchTasks)
+
+		// Rockets
+		rockets := v1.Group("/rockets")
+		{
+			rockets.GET("", handler.ListRockets)
+			rockets.POST("", handler.CreateRocket)
+			rockets.GET("/:id", handler.GetRocket)
+			rockets.PUT("/:id", handler.UpdateRocket)
+			rockets.DELETE("/:id", handler.DeleteRocket)
+		}
+
+		// Companies
+		companies := v1.Group("/companies")
+		{
+			companies.GET("", handler.ListCompanies)
+			companies.POST("", handler.CreateCompany)
+			companies.GET("/:id", handler.GetCompany)
+			companies.PUT("/:id", handler.UpdateCompany)
+			companies.DELETE("/:id", handler.DeleteCompany)
+		}
+
+		// Launch Bases
+		launchBases := v1.Group("/launch-bases")
+		{
+			launchBases.GET("", handler.ListLaunchBases)
+			launchBases.POST("", handler.CreateLaunchBase)
+			launchBases.GET("/:id", handler.GetLaunchBase)
+			launchBases.PUT("/:id", handler.UpdateLaunchBase)
+			launchBases.DELETE("/:id", handler.DeleteLaunchBase)
+		}
+
+		// Rocket Launches
+		rocketLaunches := v1.Group("/rocket-launches")
+		{
+			rocketLaunches.GET("", handler.ListRocketLaunches)
+			rocketLaunches.POST("", handler.CreateRocketLaunch)
+			rocketLaunches.GET("/:id", handler.GetRocketLaunch)
+			rocketLaunches.PUT("/:id", handler.UpdateRocketLaunch)
+			rocketLaunches.DELETE("/:id", handler.DeleteRocketLaunch)
+		}
+
+		// News
+		news := v1.Group("/news")
+		{
+			news.GET("", handler.ListNews)
+			news.POST("", handler.CreateNews)
+			news.GET("/:id", handler.GetNews)
+			news.PUT("/:id", handler.UpdateNews)
+			news.DELETE("/:id", handler.DeleteNews)
+		}
 	}
 
 	return router
