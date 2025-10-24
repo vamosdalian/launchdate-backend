@@ -136,3 +136,17 @@ func (h *Handler) DeleteRocketLaunch(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+func (h *Handler) SyncRocketLaunches(c *gin.Context) {
+	count, err := h.rocketLaunchService.SyncLaunchesFromAPI(c.Request.Context())
+	if err != nil {
+		h.logger.Printf("failed to sync rocket launches: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to sync rocket launches"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "rocket launches synced successfully",
+		"count":   count,
+	})
+}

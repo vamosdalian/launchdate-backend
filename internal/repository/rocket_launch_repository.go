@@ -80,6 +80,29 @@ func (r *RocketLaunchRepository) GetByID(id int64) (*models.RocketLaunch, error)
 	return &rocketLaunch, nil
 }
 
+func (r *RocketLaunchRepository) GetBySlug(slug string) (*models.RocketLaunch, error) {
+	var rocketLaunch models.RocketLaunch
+	query := `
+		SELECT rl.*
+		FROM rocket_launches rl
+		WHERE rl.slug = $1 AND rl.deleted_at IS NULL
+	`
+	err := r.db.Get(&rocketLaunch, query, slug)
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("rocket launch not found")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	// Load related entities
+	if err := r.loadRelatedEntities(&rocketLaunch); err != nil {
+		return nil, err
+	}
+
+	return &rocketLaunch, nil
+}
+
 func (r *RocketLaunchRepository) List(status *string, limit, offset int) ([]models.RocketLaunch, error) {
 	rocketLaunches := []models.RocketLaunch{}
 	query := `

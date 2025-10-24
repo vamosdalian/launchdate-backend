@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/vamosdalian/launchdate-backend/internal/models"
@@ -132,4 +134,93 @@ func (s *RocketLaunchService) DeleteRocketLaunch(ctx context.Context, id int64) 
 	_ = s.cache.DeletePattern(ctx, "rocket_launches:*")
 
 	return nil
+}
+
+// SyncLaunchesFromAPI fetches the latest rocket launches from RocketLaunch.Live API and saves them to the database
+func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context) (int, error) {
+	// Fetch data from the external API
+	resp, err := http.Get("https://fdo.rocketlaunch.live/json/launches/next/5")
+	if err != nil {
+		return 0, fmt.Errorf("failed to fetch launches from API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return 0, fmt.Errorf("API returned non-OK status: %d", resp.StatusCode)
+	}
+
+	// Parse the response
+	var apiResponse models.ExternalRocketLaunchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
+		return 0, fmt.Errorf("failed to decode API response: %w", err)
+	}
+
+	// Save launches to the database
+	savedCount := 0
+	for _, extLaunch := range apiResponse.Result {
+		// Convert external launch to our model
+		rocketLaunch := s.convertExternalLaunch(&extLaunch)
+
+		// Try to create the launch
+		err := s.repo.Create(rocketLaunch)
+		if err != nil {
+			// If creation fails (e.g., duplicate), try to update by slug
+			if rocketLaunch.Slug != "" {
+				existingLaunch, findErr := s.repo.GetBySlug(rocketLaunch.Slug)
+				if findErr == nil && existingLaunch != nil {
+					// Update existing launch
+					if updateErr := s.repo.Update(existingLaunch.ID, rocketLaunch); updateErr == nil {
+						savedCount++
+					}
+				}
+			}
+			continue
+		}
+
+		savedCount++
+	}
+
+	// Invalidate list cache
+	_ = s.cache.DeletePattern(ctx, "rocket_launches:*")
+
+	return savedCount, nil
+}
+
+// convertExternalLaunch converts an external API launch to our internal model
+func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLaunch) *models.RocketLaunch {
+	launch := &models.RocketLaunch{
+		CosparID:           ext.CosparID,
+		SortDate:           ext.SortDate,
+		Name:               ext.Name,
+		MissionDescription: ext.MissionDescription,
+		LaunchDescription:  ext.LaunchDescription,
+		WindowOpen:         ext.WindowOpen,
+		T0:                 ext.T0,
+		WindowClose:        ext.WindowClose,
+		DateStr:            ext.DateStr,
+		Slug:               ext.Slug,
+		WeatherSummary:     ext.WeatherSummary,
+		WeatherTemp:        ext.WeatherTemp,
+		WeatherCondition:   ext.WeatherCondition,
+		WeatherWindMPH:     ext.WeatherWindMPH,
+		WeatherIcon:        ext.WeatherIcon,
+		WeatherUpdated:     ext.WeatherUpdated,
+		QuickText:          ext.QuickText,
+		Suborbital:         ext.Suborbital,
+		Modified:           ext.Modified,
+		Status:             "scheduled", // Default status
+	}
+
+	// Set provider, vehicle, and launch base IDs if available
+	if ext.Provider != nil {
+		launch.ProviderID = &ext.Provider.ID
+	}
+	if ext.Vehicle != nil {
+		launch.RocketID = &ext.Vehicle.ID
+	}
+	if ext.Pad != nil {
+		launch.LaunchBaseID = &ext.Pad.ID
+	}
+
+	return launch
 }

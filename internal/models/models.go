@@ -387,3 +387,37 @@ type CreateNewsRequest struct {
 	URL      string    `json:"url"`
 	ImageURL string    `json:"imageUrl"`
 }
+
+// ExternalRocketLaunchResponse represents the response from RocketLaunch.Live API
+type ExternalRocketLaunchResponse struct {
+	Result []ExternalRocketLaunch `json:"result"`
+}
+
+// ExternalRocketLaunch represents a launch from the external API
+type ExternalRocketLaunch struct {
+	ID                 int64                 `json:"id"`
+	CosparID           string                `json:"cospar_id"`
+	SortDate           string                `json:"sort_date"`
+	Name               string                `json:"name"`
+	Provider           *RocketLaunchProvider `json:"provider,omitempty"`
+	Vehicle            *RocketLaunchVehicle  `json:"vehicle,omitempty"`
+	Pad                *RocketLaunchPad      `json:"pad,omitempty"`
+	Missions           []RocketLaunchMission `json:"missions,omitempty"`
+	MissionDescription string                `json:"mission_description"`
+	LaunchDescription  string                `json:"launch_description"`
+	WindowOpen         *time.Time            `json:"win_open,omitempty"`
+	T0                 *time.Time            `json:"t0,omitempty"`
+	WindowClose        *time.Time            `json:"win_close,omitempty"`
+	DateStr            string                `json:"date_str"`
+	Tags               []RocketLaunchTag     `json:"tags,omitempty"`
+	Slug               string                `json:"slug"`
+	WeatherSummary     string                `json:"weather_summary"`
+	WeatherTemp        *float32              `json:"weather_temp,omitempty"`
+	WeatherCondition   string                `json:"weather_condition"`
+	WeatherWindMPH     *float32              `json:"weather_wind_mph,omitempty"`
+	WeatherIcon        string                `json:"weather_icon"`
+	WeatherUpdated     *time.Time            `json:"weather_updated,omitempty"`
+	QuickText          string                `json:"quicktext"`
+	Suborbital         bool                  `json:"suborbital"`
+	Modified           *time.Time            `json:"modified,omitempty"`
+}
