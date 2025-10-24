@@ -2,16 +2,20 @@
 
 ## Project Overview
 
-This is a complete, production-ready Go backend for a launch date management system. The application provides a RESTful API for managing product/project launches, milestones, and tasks.
+This is a complete, production-ready Go backend for a dual-purpose launch management system. The application provides a comprehensive RESTful API for:
+
+1. **Product/Project Launch Management** - Managing product releases, milestones, and tasks
+2. **Rocket Launch Tracking** - Tracking space industry data including companies, rockets, launch sites, and launch events
 
 ## Implementation Statistics
 
-- **Go Source Files**: 21 files
+- **Go Source Files**: 35+ files
 - **Test Files**: 2 files  
-- **Lines of Code**: ~2,169 lines
-- **SQL Migrations**: 2 files (up/down)
+- **Lines of Code**: ~3,500+ lines
+- **SQL Migrations**: 2 migration sets (4 files total)
 - **Documentation**: 5 comprehensive documents
-- **API Endpoints**: 15 endpoints
+- **API Endpoints**: 40+ endpoints
+- **Database Tables**: 13 tables
 - **Build Time**: ~5 seconds
 - **Binary Size**: ~35MB
 
@@ -81,9 +85,14 @@ launchdate-backend/
 │   ├── api/                 # HTTP handlers & routing
 │   │   ├── handler.go       # Handler initialization
 │   │   ├── health_handler.go
-│   │   ├── launch_handler.go
+│   │   ├── launch_handler.go      # Product launches
 │   │   ├── milestone_handler.go
 │   │   ├── task_handler.go
+│   │   ├── company_handler.go     # Space companies
+│   │   ├── rocket_handler.go      # Rockets
+│   │   ├── launch_base_handler.go # Launch sites
+│   │   ├── rocket_launch_handler.go # Rocket launches
+│   │   ├── news_handler.go        # News articles
 │   │   └── router.go        # Route definitions
 │   ├── config/              # Configuration management
 │   │   ├── config.go
@@ -99,15 +108,27 @@ launchdate-backend/
 │   ├── repository/          # Data access layer
 │   │   ├── launch_repository.go
 │   │   ├── milestone_repository.go
-│   │   └── task_repository.go
+│   │   ├── task_repository.go
+│   │   ├── company_repository.go
+│   │   ├── rocket_repository.go
+│   │   ├── launch_base_repository.go
+│   │   ├── rocket_launch_repository.go
+│   │   └── news_repository.go
 │   └── service/             # Business logic layer
 │       ├── cache_service.go
 │       ├── launch_service.go
 │       ├── milestone_service.go
-│       └── task_service.go
+│       ├── task_service.go
+│       ├── company_service.go
+│       ├── rocket_service.go
+│       ├── launch_base_service.go
+│       ├── rocket_launch_service.go
+│       └── news_service.go
 ├── migrations/              # Database migrations
 │   ├── 001_init_schema.up.sql
-│   └── 001_init_schema.down.sql
+│   ├── 001_init_schema.down.sql
+│   ├── 002_add_rocket_launch_schema.up.sql
+│   └── 002_add_rocket_launch_schema.down.sql
 ├── docs/                    # Documentation
 │   ├── API.md              # API reference
 │   ├── DEPLOYMENT.md       # Deployment guide
@@ -131,7 +152,7 @@ launchdate-backend/
 
 ## Database Schema
 
-### Tables
+### Product Launch Management Tables
 
 1. **users** - User accounts
    - id, email, name, avatar_url, role
@@ -165,6 +186,28 @@ launchdate-backend/
    - id, entity_type, entity_id, user_id, content
    - Indexes: entity_type+entity_id, user_id, deleted_at
 
+### Rocket Launch Tracking Tables
+
+9. **companies** - Space companies
+   - id, name, description, founded, founder, headquarters, employees, website, image_url
+   - Indexes: name, deleted_at
+
+10. **rockets** - Rocket specifications
+    - id, name, description, height, diameter, mass, company_id, image_url, active
+    - Indexes: name, company_id, active, deleted_at
+
+11. **launch_bases** - Launch sites
+    - id, name, location, country, description, image_url, latitude, longitude
+    - Indexes: name, country, deleted_at
+
+12. **rocket_launches** - Rocket launch events
+    - id, name, launch_date, rocket_id, launch_base_id, status, description
+    - Indexes: name, rocket_id, launch_base_id, status, launch_date, deleted_at
+
+13. **news** - Space news articles
+    - id, title, summary, content, news_date, url, image_url
+    - Indexes: title, news_date, deleted_at
+
 ### Features
 - Foreign key constraints for data integrity
 - Soft delete pattern (deleted_at column)
@@ -177,26 +220,65 @@ launchdate-backend/
 ### Health Check
 - `GET /health` - Service health status
 
-### Launch Management
+### Product Launch Management (15 endpoints)
+
+**Launches**
 - `GET /api/v1/launches` - List launches (with filters)
 - `POST /api/v1/launches` - Create launch
 - `GET /api/v1/launches/:id` - Get launch details
 - `PUT /api/v1/launches/:id` - Update launch
 - `DELETE /api/v1/launches/:id` - Delete launch
 
-### Milestone Management
+**Milestones**
 - `GET /api/v1/launches/:launch_id/milestones` - List milestones
 - `POST /api/v1/milestones` - Create milestone
 - `GET /api/v1/milestones/:id` - Get milestone
 - `PUT /api/v1/milestones/:id` - Update milestone
 - `DELETE /api/v1/milestones/:id` - Delete milestone
 
-### Task Management
+**Tasks**
 - `GET /api/v1/launches/:launch_id/tasks` - List tasks
 - `POST /api/v1/tasks` - Create task
 - `GET /api/v1/tasks/:id` - Get task
 - `PUT /api/v1/tasks/:id` - Update task
 - `DELETE /api/v1/tasks/:id` - Delete task
+
+### Rocket Launch Tracking (25 endpoints)
+
+**Companies**
+- `GET /api/v1/companies` - List companies
+- `POST /api/v1/companies` - Create company
+- `GET /api/v1/companies/:id` - Get company
+- `PUT /api/v1/companies/:id` - Update company
+- `DELETE /api/v1/companies/:id` - Delete company
+
+**Rockets**
+- `GET /api/v1/rockets` - List rockets
+- `POST /api/v1/rockets` - Create rocket
+- `GET /api/v1/rockets/:id` - Get rocket
+- `PUT /api/v1/rockets/:id` - Update rocket
+- `DELETE /api/v1/rockets/:id` - Delete rocket
+
+**Launch Bases**
+- `GET /api/v1/launch-bases` - List launch bases
+- `POST /api/v1/launch-bases` - Create launch base
+- `GET /api/v1/launch-bases/:id` - Get launch base
+- `PUT /api/v1/launch-bases/:id` - Update launch base
+- `DELETE /api/v1/launch-bases/:id` - Delete launch base
+
+**Rocket Launches**
+- `GET /api/v1/rocket-launches` - List rocket launches
+- `POST /api/v1/rocket-launches` - Create rocket launch
+- `GET /api/v1/rocket-launches/:id` - Get rocket launch
+- `PUT /api/v1/rocket-launches/:id` - Update rocket launch
+- `DELETE /api/v1/rocket-launches/:id` - Delete rocket launch
+
+**News**
+- `GET /api/v1/news` - List news
+- `POST /api/v1/news` - Create news
+- `GET /api/v1/news/:id` - Get news
+- `PUT /api/v1/news/:id` - Update news
+- `DELETE /api/v1/news/:id` - Delete news
 
 ## Key Features
 

@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers various deployment options for the LaunchDate backend.
+This guide covers various deployment options for the LaunchDate backend - a dual-purpose API platform supporting both product launch management and rocket launch tracking.
 
 ## Table of Contents
 

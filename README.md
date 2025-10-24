@@ -1,12 +1,23 @@
 # LaunchDate Backend
 
-Backend API for the LaunchDate launch management platform.
+Backend API for the LaunchDate platform - supporting both product/project launch management and rocket launch tracking.
 
 ## Features
 
+### Product Launch Management
 - 🚀 **Launch Management**: Create and manage product/project launches
 - 📍 **Milestone Tracking**: Track key milestones for each launch
 - ✅ **Task Management**: Manage tasks associated with launches and milestones
+- 👥 **Team Collaboration**: User and team management
+
+### Rocket Launch Tracking
+- 🚁 **Company Management**: Track space companies and their details
+- 🚀 **Rocket Database**: Maintain comprehensive rocket specifications
+- 🌍 **Launch Bases**: Manage launch sites worldwide with geo-coordinates
+- 📅 **Rocket Launch Events**: Track scheduled and historical rocket launches
+- 📰 **News Management**: Space news and updates
+
+### Infrastructure
 - 🗃️ **PostgreSQL Database**: Robust data persistence with migrations
 - ⚡ **Redis Caching**: High-performance caching layer
 - 🔒 **Health Checks**: Monitor service health
@@ -106,26 +117,65 @@ You can view the documentation using tools like:
 #### Health Check
 - `GET /health` - Check service health
 
-#### Launches
+#### Product Launch Management
+
+**Launches**
 - `GET /api/v1/launches` - List all launches
 - `POST /api/v1/launches` - Create a new launch
 - `GET /api/v1/launches/{id}` - Get launch details
 - `PUT /api/v1/launches/{id}` - Update a launch
 - `DELETE /api/v1/launches/{id}` - Delete a launch
 
-#### Milestones
+**Milestones**
 - `GET /api/v1/launches/{launch_id}/milestones` - List milestones for a launch
 - `POST /api/v1/milestones` - Create a new milestone
 - `GET /api/v1/milestones/{id}` - Get milestone details
 - `PUT /api/v1/milestones/{id}` - Update a milestone
 - `DELETE /api/v1/milestones/{id}` - Delete a milestone
 
-#### Tasks
+**Tasks**
 - `GET /api/v1/launches/{launch_id}/tasks` - List tasks for a launch
 - `POST /api/v1/tasks` - Create a new task
 - `GET /api/v1/tasks/{id}` - Get task details
 - `PUT /api/v1/tasks/{id}` - Update a task
 - `DELETE /api/v1/tasks/{id}` - Delete a task
+
+#### Rocket Launch Tracking
+
+**Companies**
+- `GET /api/v1/companies` - List space companies
+- `POST /api/v1/companies` - Create a company
+- `GET /api/v1/companies/{id}` - Get company details
+- `PUT /api/v1/companies/{id}` - Update a company
+- `DELETE /api/v1/companies/{id}` - Delete a company
+
+**Rockets**
+- `GET /api/v1/rockets` - List rockets
+- `POST /api/v1/rockets` - Create a rocket
+- `GET /api/v1/rockets/{id}` - Get rocket details
+- `PUT /api/v1/rockets/{id}` - Update a rocket
+- `DELETE /api/v1/rockets/{id}` - Delete a rocket
+
+**Launch Bases**
+- `GET /api/v1/launch-bases` - List launch sites
+- `POST /api/v1/launch-bases` - Create a launch base
+- `GET /api/v1/launch-bases/{id}` - Get launch base details
+- `PUT /api/v1/launch-bases/{id}` - Update a launch base
+- `DELETE /api/v1/launch-bases/{id}` - Delete a launch base
+
+**Rocket Launches**
+- `GET /api/v1/rocket-launches` - List rocket launches
+- `POST /api/v1/rocket-launches` - Create a rocket launch
+- `GET /api/v1/rocket-launches/{id}` - Get rocket launch details
+- `PUT /api/v1/rocket-launches/{id}` - Update a rocket launch
+- `DELETE /api/v1/rocket-launches/{id}` - Delete a rocket launch
+
+**News**
+- `GET /api/v1/news` - List news articles
+- `POST /api/v1/news` - Create a news article
+- `GET /api/v1/news/{id}` - Get news article details
+- `PUT /api/v1/news/{id}` - Update a news article
+- `DELETE /api/v1/news/{id}` - Delete a news article
 
 ## Project Structure
 

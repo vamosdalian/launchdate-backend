@@ -557,180 +557,617 @@ curl http://localhost:8080/api/v1/launches?status=in-progress&limit=20
 
 ## Rocket Launch Tracking APIs
 
-The following APIs support the frontend rocket launch tracking application.
+The following APIs support rocket launch tracking and space industry data management.
 
-### Rockets
+## Companies
 
-#### GET /api/v1/rockets
+Space companies and organizations.
 
-List all rockets.
+### List Companies
+
+#### GET /api/v1/companies
+
+Retrieve a list of space companies.
 
 **Query Parameters:**
-- `active` (optional): Filter by active status (true/false)
 - `limit` (optional): Maximum number of results (default: 50, max: 100)
 - `offset` (optional): Number of results to skip (default: 0)
 
-**Response:**
+**Example Request:**
+```bash
+curl http://localhost:8080/api/v1/companies?limit=10
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "SpaceX",
+    "description": "Space Exploration Technologies Corp.",
+    "founded": 2002,
+    "founder": "Elon Musk",
+    "headquarters": "Hawthorne, California",
+    "employees": 12000,
+    "website": "https://www.spacex.com",
+    "imageUrl": "https://example.com/spacex.jpg",
+    "created_at": "2024-01-01T10:00:00Z",
+    "updated_at": "2024-01-01T10:00:00Z"
+  }
+]
+```
+
+### Create Company
+
+#### POST /api/v1/companies
+
+Create a new space company.
+
+**Request Body:**
+```json
+{
+  "name": "Blue Origin",
+  "description": "Private aerospace manufacturer",
+  "founded": 2000,
+  "founder": "Jeff Bezos",
+  "headquarters": "Kent, Washington",
+  "employees": 3500,
+  "website": "https://www.blueorigin.com",
+  "imageUrl": "https://example.com/blueorigin.jpg"
+}
+```
+
+**Required Fields:**
+- `name`
+
+**Response:** `201 Created`
+```json
+{
+  "id": 2,
+  "name": "Blue Origin",
+  "description": "Private aerospace manufacturer",
+  "founded": 2000,
+  "founder": "Jeff Bezos",
+  "headquarters": "Kent, Washington",
+  "employees": 3500,
+  "website": "https://www.blueorigin.com",
+  "imageUrl": "https://example.com/blueorigin.jpg",
+  "created_at": "2024-10-24T10:00:00Z",
+  "updated_at": "2024-10-24T10:00:00Z"
+}
+```
+
+### Get Company
+
+#### GET /api/v1/companies/:id
+
+Get details of a specific company.
+
+**Parameters:**
+- `id` (path): Company ID
+
+**Response:** `200 OK`
+
+### Update Company
+
+#### PUT /api/v1/companies/:id
+
+Update an existing company.
+
+**Parameters:**
+- `id` (path): Company ID
+
+**Request Body:**
+All fields are optional. Only include fields you want to update.
+
+```json
+{
+  "employees": 13000,
+  "description": "Updated description"
+}
+```
+
+**Response:** `200 OK`
+
+### Delete Company
+
+#### DELETE /api/v1/companies/:id
+
+Soft delete a company.
+
+**Parameters:**
+- `id` (path): Company ID
+
+**Response:** `204 No Content`
+
+---
+
+## Rockets
+
+Rocket specifications and details.
+
+### List Rockets
+
+#### GET /api/v1/rockets
+
+List all rockets with optional filtering.
+
+**Query Parameters:**
+- `active` (optional): Filter by active status (true/false)
+- `company_id` (optional): Filter by company ID
+- `limit` (optional): Maximum number of results (default: 50, max: 100)
+- `offset` (optional): Number of results to skip (default: 0)
+
+**Example Request:**
+```bash
+curl http://localhost:8080/api/v1/rockets?active=true&limit=10
+```
+
+**Response:** `200 OK`
 ```json
 [
   {
     "id": 1,
     "name": "Falcon 9",
-    "description": "A reusable rocket",
+    "description": "Two-stage reusable rocket",
     "height": 70.0,
     "diameter": 3.7,
     "mass": 549054.0,
+    "company_id": 1,
     "company": "SpaceX",
     "imageUrl": "https://example.com/falcon9.jpg",
-    "active": true
+    "active": true,
+    "created_at": "2024-01-01T10:00:00Z",
+    "updated_at": "2024-01-01T10:00:00Z"
   }
 ]
 ```
+
+### Create Rocket
 
 #### POST /api/v1/rockets
 
 Create a new rocket.
 
+**Request Body:**
+```json
+{
+  "name": "Starship",
+  "description": "Fully reusable super heavy-lift launch vehicle",
+  "height": 120.0,
+  "diameter": 9.0,
+  "mass": 5000000.0,
+  "company_id": 1,
+  "imageUrl": "https://example.com/starship.jpg",
+  "active": true
+}
+```
+
+**Required Fields:**
+- `name`
+
+**Response:** `201 Created`
+
+### Get Rocket
+
 #### GET /api/v1/rockets/:id
 
-Get rocket details by ID.
+Get details of a specific rocket.
+
+**Parameters:**
+- `id` (path): Rocket ID
+
+**Response:** `200 OK`
+
+### Update Rocket
 
 #### PUT /api/v1/rockets/:id
 
-Update a rocket.
+Update an existing rocket.
+
+**Parameters:**
+- `id` (path): Rocket ID
+
+**Request Body:**
+```json
+{
+  "active": false,
+  "description": "Updated description"
+}
+```
+
+**Response:** `200 OK`
+
+### Delete Rocket
 
 #### DELETE /api/v1/rockets/:id
 
-Delete a rocket.
+Soft delete a rocket.
+
+**Parameters:**
+- `id` (path): Rocket ID
+
+**Response:** `204 No Content`
 
 ---
 
-### Companies
+## Launch Bases
 
-#### GET /api/v1/companies
+Launch sites and facilities worldwide.
 
-List all space companies.
-
-#### POST /api/v1/companies
-
-Create a new company.
-
-#### GET /api/v1/companies/:id
-
-Get company details by ID.
-
-#### PUT /api/v1/companies/:id
-
-Update a company.
-
-#### DELETE /api/v1/companies/:id
-
-Delete a company.
-
----
-
-### Launch Bases
+### List Launch Bases
 
 #### GET /api/v1/launch-bases
 
 List all launch sites.
 
-#### POST /api/v1/launch-bases
-
-Create a new launch base.
-
-#### GET /api/v1/launch-bases/:id
-
-Get launch base details by ID.
-
-#### PUT /api/v1/launch-bases/:id
-
-Update a launch base.
-
-#### DELETE /api/v1/launch-bases/:id
-
-Delete a launch base.
-
----
-
-### Rocket Launches
-
-#### GET /api/v1/rocket-launches
-
-List all rocket launches.
-
 **Query Parameters:**
-- `status` (optional): Filter by status (`scheduled`, `successful`, `failed`, `cancelled`)
+- `country` (optional): Filter by country
 - `limit` (optional): Maximum number of results (default: 50, max: 100)
 - `offset` (optional): Number of results to skip (default: 0)
 
-**Response:**
+**Example Request:**
+```bash
+curl http://localhost:8080/api/v1/launch-bases?country=USA
+```
+
+**Response:** `200 OK`
 ```json
 [
   {
     "id": 1,
-    "name": "Starlink Mission",
-    "date": "2025-10-23T10:30:00Z",
-    "rocket": "Falcon 9",
-    "launchBase": "Kennedy Space Center",
-    "status": "scheduled",
-    "description": "Deployment of Starlink satellites"
+    "name": "Kennedy Space Center",
+    "location": "Merritt Island, Florida",
+    "country": "USA",
+    "description": "NASA's primary launch center",
+    "imageUrl": "https://example.com/ksc.jpg",
+    "latitude": 28.573469,
+    "longitude": -80.651070,
+    "created_at": "2024-01-01T10:00:00Z",
+    "updated_at": "2024-01-01T10:00:00Z"
   }
 ]
 ```
 
-#### POST /api/v1/rocket-launches
+### Create Launch Base
 
-Create a new rocket launch.
+#### POST /api/v1/launch-bases
 
-#### GET /api/v1/rocket-launches/:id
+Create a new launch base.
 
-Get rocket launch details by ID.
+**Request Body:**
+```json
+{
+  "name": "Vandenberg Space Force Base",
+  "location": "Santa Barbara County, California",
+  "country": "USA",
+  "description": "U.S. Space Force Base for polar orbit launches",
+  "imageUrl": "https://example.com/vandenberg.jpg",
+  "latitude": 34.632,
+  "longitude": -120.611
+}
+```
 
-#### PUT /api/v1/rocket-launches/:id
+**Required Fields:**
+- `name`
 
-Update a rocket launch.
+**Response:** `201 Created`
 
-#### DELETE /api/v1/rocket-launches/:id
+### Get Launch Base
 
-Delete a rocket launch.
+#### GET /api/v1/launch-bases/:id
+
+Get details of a specific launch base.
+
+**Parameters:**
+- `id` (path): Launch base ID
+
+**Response:** `200 OK`
+
+### Update Launch Base
+
+#### PUT /api/v1/launch-bases/:id
+
+Update an existing launch base.
+
+**Parameters:**
+- `id` (path): Launch base ID
+
+**Request Body:**
+```json
+{
+  "description": "Updated description",
+  "latitude": 34.633,
+  "longitude": -120.612
+}
+```
+
+**Response:** `200 OK`
+
+### Delete Launch Base
+
+#### DELETE /api/v1/launch-bases/:id
+
+Soft delete a launch base.
+
+**Parameters:**
+- `id` (path): Launch base ID
+
+**Response:** `204 No Content`
 
 ---
 
-### News
+## Rocket Launches
+
+Scheduled and historical rocket launch events.
+
+### List Rocket Launches
+
+#### GET /api/v1/rocket-launches
+
+List all rocket launches with optional filtering.
+
+**Query Parameters:**
+- `status` (optional): Filter by status (`scheduled`, `successful`, `failed`, `cancelled`)
+- `rocket_id` (optional): Filter by rocket ID
+- `launch_base_id` (optional): Filter by launch base ID
+- `limit` (optional): Maximum number of results (default: 50, max: 100)
+- `offset` (optional): Number of results to skip (default: 0)
+
+**Example Request:**
+```bash
+curl http://localhost:8080/api/v1/rocket-launches?status=scheduled&limit=20
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Starlink 6-35",
+    "date": "2025-10-25T10:30:00Z",
+    "rocket_id": 1,
+    "rocket": "Falcon 9",
+    "launch_base_id": 1,
+    "launchBase": "Kennedy Space Center",
+    "status": "scheduled",
+    "description": "Deployment of 23 Starlink satellites",
+    "created_at": "2024-10-01T10:00:00Z",
+    "updated_at": "2024-10-01T10:00:00Z"
+  }
+]
+```
+
+### Create Rocket Launch
+
+#### POST /api/v1/rocket-launches
+
+Create a new rocket launch event.
+
+**Request Body:**
+```json
+{
+  "name": "Artemis III",
+  "date": "2026-09-01T14:00:00Z",
+  "rocket_id": 5,
+  "launch_base_id": 1,
+  "status": "scheduled",
+  "description": "First crewed Moon landing of the Artemis program"
+}
+```
+
+**Required Fields:**
+- `name`
+- `date`
+
+**Response:** `201 Created`
+
+### Get Rocket Launch
+
+#### GET /api/v1/rocket-launches/:id
+
+Get details of a specific rocket launch.
+
+**Parameters:**
+- `id` (path): Rocket launch ID
+
+**Response:** `200 OK`
+
+### Update Rocket Launch
+
+#### PUT /api/v1/rocket-launches/:id
+
+Update an existing rocket launch.
+
+**Parameters:**
+- `id` (path): Rocket launch ID
+
+**Request Body:**
+```json
+{
+  "status": "successful",
+  "date": "2026-09-02T15:30:00Z"
+}
+```
+
+**Response:** `200 OK`
+
+### Delete Rocket Launch
+
+#### DELETE /api/v1/rocket-launches/:id
+
+Soft delete a rocket launch.
+
+**Parameters:**
+- `id` (path): Rocket launch ID
+
+**Response:** `204 No Content`
+
+### Rocket Launch Status Values
+- `scheduled`: Upcoming launch
+- `successful`: Launch completed successfully
+- `failed`: Launch failed
+- `cancelled`: Launch cancelled
+
+---
+
+## News
+
+Space industry news and updates.
+
+### List News
 
 #### GET /api/v1/news
 
 List all news articles.
 
-**Response:**
+**Query Parameters:**
+- `limit` (optional): Maximum number of results (default: 50, max: 100)
+- `offset` (optional): Number of results to skip (default: 0)
+
+**Example Request:**
+```bash
+curl http://localhost:8080/api/v1/news?limit=10
+```
+
+**Response:** `200 OK`
 ```json
 [
   {
     "id": 1,
     "title": "SpaceX Completes 200th Successful Landing",
-    "summary": "SpaceX has achieved another milestone...",
+    "summary": "SpaceX has achieved another milestone with its 200th successful booster landing",
     "content": "Full article content in markdown format...",
     "date": "2025-10-20T12:00:00Z",
-    "url": "https://www.spacex.com",
-    "imageUrl": "https://example.com/news.jpg"
+    "url": "https://www.spacex.com/updates",
+    "imageUrl": "https://example.com/news1.jpg",
+    "created_at": "2025-10-20T12:00:00Z",
+    "updated_at": "2025-10-20T12:00:00Z"
   }
 ]
 ```
+
+### Create News Article
 
 #### POST /api/v1/news
 
 Create a new news article.
 
+**Request Body:**
+```json
+{
+  "title": "NASA Announces New Moon Mission",
+  "summary": "NASA reveals plans for additional lunar missions",
+  "content": "Detailed article content with markdown support...",
+  "date": "2025-10-24T08:00:00Z",
+  "url": "https://www.nasa.gov/news",
+  "imageUrl": "https://example.com/moon-mission.jpg"
+}
+```
+
+**Required Fields:**
+- `title`
+- `date`
+
+**Response:** `201 Created`
+
+### Get News Article
+
 #### GET /api/v1/news/:id
 
-Get news article details by ID.
+Get details of a specific news article.
+
+**Parameters:**
+- `id` (path): News article ID
+
+**Response:** `200 OK`
+
+### Update News Article
 
 #### PUT /api/v1/news/:id
 
-Update a news article.
+Update an existing news article.
+
+**Parameters:**
+- `id` (path): News article ID
+
+**Request Body:**
+```json
+{
+  "title": "Updated Title",
+  "summary": "Updated summary"
+}
+```
+
+**Response:** `200 OK`
+
+### Delete News Article
 
 #### DELETE /api/v1/news/:id
 
-Delete a news article.
+Soft delete a news article.
+
+**Parameters:**
+- `id` (path): News article ID
+
+**Response:** `204 No Content`
+
+---
+
+## Complete API Example: Rocket Launch Workflow
+
+Here's an example workflow for creating a complete rocket launch with all related entities:
+
+```bash
+# Step 1: Create a space company
+curl -X POST http://localhost:8080/api/v1/companies \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "SpaceX",
+    "description": "Space Exploration Technologies Corp.",
+    "founded": 2002,
+    "founder": "Elon Musk",
+    "headquarters": "Hawthorne, California",
+    "website": "https://www.spacex.com"
+  }'
+
+# Step 2: Create a rocket
+curl -X POST http://localhost:8080/api/v1/rockets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Falcon 9",
+    "description": "Two-stage reusable rocket",
+    "height": 70.0,
+    "diameter": 3.7,
+    "mass": 549054.0,
+    "company_id": 1,
+    "active": true
+  }'
+
+# Step 3: Create a launch base
+curl -X POST http://localhost:8080/api/v1/launch-bases \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Kennedy Space Center",
+    "location": "Merritt Island, Florida",
+    "country": "USA",
+    "latitude": 28.573469,
+    "longitude": -80.651070
+  }'
+
+# Step 4: Create a rocket launch event
+curl -X POST http://localhost:8080/api/v1/rocket-launches \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Starlink 6-35",
+    "date": "2025-10-25T10:30:00Z",
+    "rocket_id": 1,
+    "launch_base_id": 1,
+    "status": "scheduled",
+    "description": "Deployment of 23 Starlink satellites"
+  }'
+
+# Step 5: List all scheduled launches
+curl http://localhost:8080/api/v1/rocket-launches?status=scheduled
+```
 
