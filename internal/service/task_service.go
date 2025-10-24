@@ -34,7 +34,6 @@ func (s *TaskService) CreateTask(ctx context.Context, req *models.CreateTaskRequ
 
 	task := &models.Task{
 		LaunchID:    req.LaunchID,
-		MilestoneID: req.MilestoneID,
 		Title:       req.Title,
 		Description: req.Description,
 		AssigneeID:  req.AssigneeID,
@@ -73,15 +72,15 @@ func (s *TaskService) GetTask(ctx context.Context, id int64) (*models.Task, erro
 }
 
 // ListTasksByLaunchID retrieves all tasks for a launch
-func (s *TaskService) ListTasksByLaunchID(ctx context.Context, launchID int64, milestoneID *int64) ([]*models.Task, error) {
-	cacheKey := fmt.Sprintf("tasks:launch:%d:milestone:%v", launchID, milestoneID)
+func (s *TaskService) ListTasksByLaunchID(ctx context.Context, launchID int64) ([]*models.Task, error) {
+	cacheKey := fmt.Sprintf("tasks:launch:%d", launchID)
 	var tasks []*models.Task
 	err := s.cache.Get(ctx, cacheKey, &tasks)
 	if err == nil {
 		return tasks, nil
 	}
 
-	tasks, err = s.repo.ListByLaunchID(ctx, launchID, milestoneID)
+	tasks, err = s.repo.ListByLaunchID(ctx, launchID)
 	if err != nil {
 		return nil, err
 	}

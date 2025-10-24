@@ -10,7 +10,6 @@ import (
 // Handler holds all API handlers
 type Handler struct {
 	launchService       *service.LaunchService
-	milestoneService    *service.MilestoneService
 	taskService         *service.TaskService
 	rocketService       *service.RocketService
 	companyService      *service.CompanyService
@@ -26,7 +25,6 @@ type Handler struct {
 func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Logger) *Handler {
 	// Initialize repositories
 	launchRepo := repository.NewLaunchRepository(db)
-	milestoneRepo := repository.NewMilestoneRepository(db)
 	taskRepo := repository.NewTaskRepository(db)
 	rocketRepo := repository.NewRocketRepository(db.DB)
 	companyRepo := repository.NewCompanyRepository(db.DB)
@@ -36,7 +34,6 @@ func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Log
 
 	// Initialize services
 	launchService := service.NewLaunchService(launchRepo, cache)
-	milestoneService := service.NewMilestoneService(milestoneRepo, cache)
 	taskService := service.NewTaskService(taskRepo, cache)
 	rocketService := service.NewRocketService(rocketRepo, cache)
 	companyService := service.NewCompanyService(companyRepo, cache)
@@ -46,7 +43,6 @@ func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Log
 
 	return &Handler{
 		launchService:       launchService,
-		milestoneService:    milestoneService,
 		taskService:         taskService,
 		rocketService:       rocketService,
 		companyService:      companyService,
