@@ -26,6 +26,9 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			launches.GET("/:id", handler.GetLaunch)
 			launches.PUT("/:id", handler.UpdateLaunch)
 			launches.DELETE("/:id", handler.DeleteLaunch)
+			// Nested routes for a specific launch
+			launches.GET("/:id/milestones", handler.ListLaunchMilestones)
+			launches.GET("/:id/tasks", handler.ListLaunchTasks)
 		}
 
 		// Milestones
@@ -37,9 +40,6 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			milestones.DELETE("/:id", handler.DeleteMilestone)
 		}
 
-		// Launch milestones
-		v1.GET("/launches/:launch_id/milestones", handler.ListLaunchMilestones)
-
 		// Tasks
 		tasks := v1.Group("/tasks")
 		{
@@ -48,9 +48,6 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			tasks.PUT("/:id", handler.UpdateTask)
 			tasks.DELETE("/:id", handler.DeleteTask)
 		}
-
-		// Launch tasks
-		v1.GET("/launches/:launch_id/tasks", handler.ListLaunchTasks)
 
 		// Rockets
 		rockets := v1.Group("/rockets")

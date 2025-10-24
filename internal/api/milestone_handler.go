@@ -61,11 +61,11 @@ func (h *Handler) GetMilestone(c *gin.Context) {
 // @Summary List milestones for a launch
 // @Tags milestones
 // @Produce json
-// @Param launch_id path int true "Launch ID"
+// @Param id path int true "Launch ID"
 // @Success 200 {array} models.Milestone
-// @Router /api/v1/launches/{launch_id}/milestones [get]
+// @Router /api/v1/launches/{id}/milestones [get]
 func (h *Handler) ListLaunchMilestones(c *gin.Context) {
-	launchID, err := strconv.ParseInt(c.Param("launch_id"), 10, 64)
+	launchID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid launch_id"})
 		return

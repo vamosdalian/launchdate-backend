@@ -4,17 +4,15 @@ FROM golang:1.24-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy go mod files
+# Copy go mod files and vendor directory
 COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod download
+COPY vendor ./vendor
 
 # Copy source code
 COPY . .
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/server ./cmd/server
+# Build the application using vendored dependencies
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -o /app/server ./cmd/server
 
 # Final stage - use distroless for smaller, secure image
 FROM gcr.io/distroless/static-debian11:nonroot

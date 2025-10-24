@@ -61,12 +61,12 @@ func (h *Handler) GetTask(c *gin.Context) {
 // @Summary List tasks for a launch
 // @Tags tasks
 // @Produce json
-// @Param launch_id path int true "Launch ID"
+// @Param id path int true "Launch ID"
 // @Param milestone_id query int false "Milestone ID filter"
 // @Success 200 {array} models.Task
-// @Router /api/v1/launches/{launch_id}/tasks [get]
+// @Router /api/v1/launches/{id}/tasks [get]
 func (h *Handler) ListLaunchTasks(c *gin.Context) {
-	launchID, err := strconv.ParseInt(c.Param("launch_id"), 10, 64)
+	launchID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid launch_id"})
 		return
