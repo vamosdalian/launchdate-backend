@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15-alpine
@@ -40,7 +38,6 @@ services:
     volumes:
       - ./migrations:/migrations
     command: ["-path", "/migrations", "-database", "postgres://postgres:postgres@postgres:5432/launchdate?sslmode=disable", "up"]
-    restart: on-failure
 
   app:
     build:
