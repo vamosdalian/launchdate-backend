@@ -69,30 +69,10 @@ CREATE TABLE IF NOT EXISTS launch_tags (
 
 CREATE INDEX idx_launch_tags_tag ON launch_tags(tag);
 
--- Create milestones table
-CREATE TABLE IF NOT EXISTS milestones (
-    id BIGSERIAL PRIMARY KEY,
-    launch_id BIGINT NOT NULL REFERENCES launches(id) ON DELETE CASCADE,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    due_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'pending',
-    order_num INT NOT NULL DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP WITH TIME ZONE
-);
-
-CREATE INDEX idx_milestones_launch_id ON milestones(launch_id);
-CREATE INDEX idx_milestones_status ON milestones(status);
-CREATE INDEX idx_milestones_due_date ON milestones(due_date);
-CREATE INDEX idx_milestones_deleted_at ON milestones(deleted_at);
-
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS tasks (
     id BIGSERIAL PRIMARY KEY,
     launch_id BIGINT NOT NULL REFERENCES launches(id) ON DELETE CASCADE,
-    milestone_id BIGINT REFERENCES milestones(id) ON DELETE SET NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     assignee_id BIGINT REFERENCES users(id),
@@ -105,7 +85,6 @@ CREATE TABLE IF NOT EXISTS tasks (
 );
 
 CREATE INDEX idx_tasks_launch_id ON tasks(launch_id);
-CREATE INDEX idx_tasks_milestone_id ON tasks(milestone_id);
 CREATE INDEX idx_tasks_assignee_id ON tasks(assignee_id);
 CREATE INDEX idx_tasks_status ON tasks(status);
 CREATE INDEX idx_tasks_deleted_at ON tasks(deleted_at);
@@ -286,7 +265,6 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_teams_updated_at BEFORE UPDATE ON teams FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_launches_updated_at BEFORE UPDATE ON launches FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_milestones_updated_at BEFORE UPDATE ON milestones FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_comments_updated_at BEFORE UPDATE ON comments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_companies_updated_at BEFORE UPDATE ON companies FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

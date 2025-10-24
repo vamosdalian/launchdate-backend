@@ -4,7 +4,7 @@
 
 This is a complete, production-ready Go backend for a dual-purpose launch management system. The application provides a comprehensive RESTful API for:
 
-1. **Product/Project Launch Management** - Managing product releases, milestones, and tasks
+1. **Product/Project Launch Management** - Managing product releases and tasks
 2. **Rocket Launch Tracking** - Tracking space industry data including companies, rockets, launch sites, and launch events
 
 ## Implementation Statistics
@@ -41,14 +41,13 @@ This is a complete, production-ready Go backend for a dual-purpose launch manage
 ### Clean Architecture Pattern
 
 ```
-┌─────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────┐
 │                     HTTP Clients                         │
 └────────────────────┬────────────────────────────────────┘
                      │
 ┌────────────────────▼────────────────────────────────────┐
 │              API Layer (Handlers)                        │
 │  - Launch Handler                                        │
-│  - Milestone Handler                                     │
 │  - Task Handler                                          │
 │  - Health Handler                                        │
 └────────────────────┬────────────────────────────────────┘
@@ -56,7 +55,6 @@ This is a complete, production-ready Go backend for a dual-purpose launch manage
 ┌────────────────────▼────────────────────────────────────┐
 │              Service Layer (Business Logic)              │
 │  - Launch Service (with caching)                         │
-│  - Milestone Service (with caching)                      │
 │  - Task Service (with caching)                           │
 │  - Cache Service                                         │
 └────────────────────┬────────────────────────────────────┘
@@ -64,7 +62,6 @@ This is a complete, production-ready Go backend for a dual-purpose launch manage
 ┌────────────────────▼────────────────────────────────────┐
 │            Repository Layer (Data Access)                │
 │  - Launch Repository                                     │
-│  - Milestone Repository                                  │
 │  - Task Repository                                       │
 └────────────────────┬────────────────────────────────────┘
                      │
@@ -86,7 +83,6 @@ launchdate-backend/
 │   │   ├── handler.go       # Handler initialization
 │   │   ├── health_handler.go
 │   │   ├── launch_handler.go      # Product launches
-│   │   ├── milestone_handler.go
 │   │   ├── task_handler.go
 │   │   ├── company_handler.go     # Space companies
 │   │   ├── rocket_handler.go      # Rockets
@@ -107,7 +103,6 @@ launchdate-backend/
 │   │   └── models_test.go
 │   ├── repository/          # Data access layer
 │   │   ├── launch_repository.go
-│   │   ├── milestone_repository.go
 │   │   ├── task_repository.go
 │   │   ├── company_repository.go
 │   │   ├── rocket_repository.go
@@ -117,7 +112,6 @@ launchdate-backend/
 │   └── service/             # Business logic layer
 │       ├── cache_service.go
 │       ├── launch_service.go
-│       ├── milestone_service.go
 │       ├── task_service.go
 │       ├── company_service.go
 │       ├── rocket_service.go
@@ -174,15 +168,11 @@ launchdate-backend/
    - launch_id, tag
    - Indexes: tag
 
-6. **milestones** - Launch milestones
-   - id, launch_id, title, description, due_date, status, order_num
-   - Indexes: launch_id, status, due_date, deleted_at
+6. **tasks** - Work items
+   - id, launch_id, title, description, assignee_id, status, priority, due_date
+   - Indexes: launch_id, assignee_id, status, deleted_at
 
-7. **tasks** - Work items
-   - id, launch_id, milestone_id, title, description, assignee_id, status, priority, due_date
-   - Indexes: launch_id, milestone_id, assignee_id, status, deleted_at
-
-8. **comments** - Comments on entities
+7. **comments** - Comments on entities
    - id, entity_type, entity_id, user_id, content
    - Indexes: entity_type+entity_id, user_id, deleted_at
 
@@ -220,7 +210,7 @@ launchdate-backend/
 ### Health Check
 - `GET /health` - Service health status
 
-### Product Launch Management (15 endpoints)
+### Product Launch Management (10 endpoints)
 
 **Launches**
 - `GET /api/v1/launches` - List launches (with filters)
@@ -228,13 +218,6 @@ launchdate-backend/
 - `GET /api/v1/launches/:id` - Get launch details
 - `PUT /api/v1/launches/:id` - Update launch
 - `DELETE /api/v1/launches/:id` - Delete launch
-
-**Milestones**
-- `GET /api/v1/launches/:launch_id/milestones` - List milestones
-- `POST /api/v1/milestones` - Create milestone
-- `GET /api/v1/milestones/:id` - Get milestone
-- `PUT /api/v1/milestones/:id` - Update milestone
-- `DELETE /api/v1/milestones/:id` - Delete milestone
 
 **Tasks**
 - `GET /api/v1/launches/:launch_id/tasks` - List tasks

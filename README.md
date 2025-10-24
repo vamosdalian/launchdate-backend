@@ -6,8 +6,7 @@ Backend API for the LaunchDate platform - supporting both product/project launch
 
 ### Product Launch Management
 - 🚀 **Launch Management**: Create and manage product/project launches
-- 📍 **Milestone Tracking**: Track key milestones for each launch
-- ✅ **Task Management**: Manage tasks associated with launches and milestones
+- ✅ **Task Management**: Manage tasks associated with launches
 - 👥 **Team Collaboration**: User and team management
 
 ### Rocket Launch Tracking
@@ -125,13 +124,6 @@ You can view the documentation using tools like:
 - `GET /api/v1/launches/{id}` - Get launch details
 - `PUT /api/v1/launches/{id}` - Update a launch
 - `DELETE /api/v1/launches/{id}` - Delete a launch
-
-**Milestones**
-- `GET /api/v1/launches/{launch_id}/milestones` - List milestones for a launch
-- `POST /api/v1/milestones` - Create a new milestone
-- `GET /api/v1/milestones/{id}` - Get milestone details
-- `PUT /api/v1/milestones/{id}` - Update a milestone
-- `DELETE /api/v1/milestones/{id}` - Delete a milestone
 
 **Tasks**
 - `GET /api/v1/launches/{launch_id}/tasks` - List tasks for a launch

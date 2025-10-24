@@ -62,7 +62,6 @@ func (h *Handler) GetTask(c *gin.Context) {
 // @Tags tasks
 // @Produce json
 // @Param launch_id path int true "Launch ID"
-// @Param milestone_id query int false "Milestone ID filter"
 // @Success 200 {array} models.Task
 // @Router /api/v1/launches/{launch_id}/tasks [get]
 func (h *Handler) ListLaunchTasks(c *gin.Context) {
@@ -72,15 +71,7 @@ func (h *Handler) ListLaunchTasks(c *gin.Context) {
 		return
 	}
 
-	var milestoneID *int64
-	if milestoneIDStr := c.Query("milestone_id"); milestoneIDStr != "" {
-		id, err := strconv.ParseInt(milestoneIDStr, 10, 64)
-		if err == nil {
-			milestoneID = &id
-		}
-	}
-
-	tasks, err := h.taskService.ListTasksByLaunchID(c.Request.Context(), launchID, milestoneID)
+	tasks, err := h.taskService.ListTasksByLaunchID(c.Request.Context(), launchID)
 	if err != nil {
 		h.logger.WithError(err).Error("failed to list tasks")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to list tasks"})

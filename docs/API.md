@@ -215,102 +215,6 @@ Soft delete a launch.
 
 ---
 
-## Milestones
-
-### List Milestones for Launch
-
-#### GET /api/v1/launches/:launch_id/milestones
-
-Retrieve all milestones for a specific launch.
-
-**Parameters:**
-- `launch_id` (path): Launch ID
-
-**Response:** `200 OK`
-```json
-[
-  {
-    "id": 1,
-    "launch_id": 1,
-    "title": "Design Complete",
-    "description": "Complete all design mockups",
-    "due_date": "2024-10-15T00:00:00Z",
-    "status": "completed",
-    "order": 1,
-    "created_at": "2024-01-01T10:00:00Z",
-    "updated_at": "2024-10-15T16:00:00Z"
-  }
-]
-```
-
-### Create Milestone
-
-#### POST /api/v1/milestones
-
-Create a new milestone.
-
-**Request Body:**
-```json
-{
-  "launch_id": 1,
-  "title": "Beta Testing",
-  "description": "Complete beta testing phase",
-  "due_date": "2024-11-01T00:00:00Z",
-  "status": "pending",
-  "order": 2
-}
-```
-
-**Required Fields:**
-- `launch_id`
-- `title`
-- `due_date`
-
-**Response:** `201 Created`
-
-### Get Milestone
-
-#### GET /api/v1/milestones/:id
-
-Retrieve details of a specific milestone.
-
-**Parameters:**
-- `id` (path): Milestone ID
-
-**Response:** `200 OK`
-
-### Update Milestone
-
-#### PUT /api/v1/milestones/:id
-
-Update an existing milestone.
-
-**Parameters:**
-- `id` (path): Milestone ID
-
-**Request Body:**
-```json
-{
-  "status": "in-progress",
-  "due_date": "2024-11-05T00:00:00Z"
-}
-```
-
-**Response:** `200 OK`
-
-### Delete Milestone
-
-#### DELETE /api/v1/milestones/:id
-
-Soft delete a milestone.
-
-**Parameters:**
-- `id` (path): Milestone ID
-
-**Response:** `204 No Content`
-
----
-
 ## Tasks
 
 ### List Tasks for Launch
@@ -322,16 +226,12 @@ Retrieve all tasks for a specific launch.
 **Parameters:**
 - `launch_id` (path): Launch ID
 
-**Query Parameters:**
-- `milestone_id` (optional): Filter by milestone ID
-
 **Response:** `200 OK`
 ```json
 [
   {
     "id": 1,
     "launch_id": 1,
-    "milestone_id": 1,
     "title": "Create wireframes",
     "description": "Design wireframes for main pages",
     "assignee_id": 3,
@@ -354,7 +254,6 @@ Create a new task.
 ```json
 {
   "launch_id": 1,
-  "milestone_id": 1,
   "title": "Write user documentation",
   "description": "Create comprehensive user guide",
   "assignee_id": 4,
@@ -438,12 +337,6 @@ Soft delete a task.
 - `high`
 - `critical`
 
-### Milestone Status Values
-- `pending`: Not started
-- `in-progress`: In progress
-- `completed`: Completed
-- `blocked`: Blocked
-
 ### Task Status Values
 - `todo`: Not started
 - `in-progress`: In progress
@@ -500,7 +393,7 @@ Common errors:
 
 ## Examples
 
-### Create a Complete Launch with Milestones
+### Create a Complete Launch with Tasks
 
 ```bash
 # Step 1: Create a launch
@@ -515,22 +408,11 @@ curl -X POST http://localhost:8080/api/v1/launches \
     "tags": ["mobile", "app"]
   }'
 
-# Step 2: Create milestones
-curl -X POST http://localhost:8080/api/v1/milestones \
-  -H "Content-Type: application/json" \
-  -d '{
-    "launch_id": 1,
-    "title": "Design Phase",
-    "due_date": "2024-10-31T00:00:00Z",
-    "order": 1
-  }'
-
-# Step 3: Create tasks
+# Step 2: Create tasks
 curl -X POST http://localhost:8080/api/v1/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "launch_id": 1,
-    "milestone_id": 1,
     "title": "Create UI mockups",
     "priority": "high",
     "due_date": "2024-10-15T00:00:00Z"

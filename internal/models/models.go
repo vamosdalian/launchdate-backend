@@ -21,25 +21,10 @@ type Launch struct {
 	DeletedAt   *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }
 
-// Milestone represents a key milestone in a launch
-type Milestone struct {
-	ID          int64      `json:"id" db:"id"`
-	LaunchID    int64      `json:"launch_id" db:"launch_id"`
-	Title       string     `json:"title" db:"title"`
-	Description string     `json:"description" db:"description"`
-	DueDate     time.Time  `json:"due_date" db:"due_date"`
-	Status      string     `json:"status" db:"status"` // pending, in-progress, completed, blocked
-	Order       int        `json:"order" db:"order_num"`
-	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at" db:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
-}
-
-// Task represents a specific task within a milestone or launch
+// Task represents a specific task within a launch
 type Task struct {
 	ID          int64      `json:"id" db:"id"`
 	LaunchID    int64      `json:"launch_id" db:"launch_id"`
-	MilestoneID *int64     `json:"milestone_id,omitempty" db:"milestone_id"`
 	Title       string     `json:"title" db:"title"`
 	Description string     `json:"description" db:"description"`
 	AssigneeID  *int64     `json:"assignee_id,omitempty" db:"assignee_id"`
@@ -82,10 +67,10 @@ type TeamMember struct {
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
-// Comment represents a comment on a launch, milestone, or task
+// Comment represents a comment on a launch or task
 type Comment struct {
 	ID         int64      `json:"id" db:"id"`
-	EntityType string     `json:"entity_type" db:"entity_type"` // launch, milestone, task
+	EntityType string     `json:"entity_type" db:"entity_type"` // launch, task
 	EntityID   int64      `json:"entity_id" db:"entity_id"`
 	UserID     int64      `json:"user_id" db:"user_id"`
 	Content    string     `json:"content" db:"content"`
@@ -124,29 +109,9 @@ type UpdateLaunchRequest struct {
 	Tags        []string   `json:"tags"`
 }
 
-// CreateMilestoneRequest represents the request to create a milestone
-type CreateMilestoneRequest struct {
-	LaunchID    int64     `json:"launch_id" binding:"required"`
-	Title       string    `json:"title" binding:"required"`
-	Description string    `json:"description"`
-	DueDate     time.Time `json:"due_date" binding:"required"`
-	Status      string    `json:"status"`
-	Order       int       `json:"order"`
-}
-
-// UpdateMilestoneRequest represents the request to update a milestone
-type UpdateMilestoneRequest struct {
-	Title       *string    `json:"title"`
-	Description *string    `json:"description"`
-	DueDate     *time.Time `json:"due_date"`
-	Status      *string    `json:"status"`
-	Order       *int       `json:"order"`
-}
-
 // CreateTaskRequest represents the request to create a task
 type CreateTaskRequest struct {
 	LaunchID    int64      `json:"launch_id" binding:"required"`
-	MilestoneID *int64     `json:"milestone_id"`
 	Title       string     `json:"title" binding:"required"`
 	Description string     `json:"description"`
 	AssigneeID  *int64     `json:"assignee_id"`
@@ -163,7 +128,6 @@ type UpdateTaskRequest struct {
 	Status      *string    `json:"status"`
 	Priority    *string    `json:"priority"`
 	DueDate     *time.Time `json:"due_date"`
-	MilestoneID *int64     `json:"milestone_id"`
 }
 
 // HealthResponse represents the health check response

@@ -24,8 +24,8 @@ func NewTaskRepository(db *database.DB) *TaskRepository {
 // Create creates a new task
 func (r *TaskRepository) Create(ctx context.Context, task *models.Task) error {
 	query := `
-		INSERT INTO tasks (launch_id, milestone_id, title, description, assignee_id, status, priority, due_date, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		INSERT INTO tasks (launch_id, title, description, assignee_id, status, priority, due_date, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING id, created_at, updated_at`
 
 	now := time.Now()
@@ -33,7 +33,6 @@ func (r *TaskRepository) Create(ctx context.Context, task *models.Task) error {
 		ctx,
 		query,
 		task.LaunchID,
-		task.MilestoneID,
 		task.Title,
 		task.Description,
 		task.AssigneeID,
@@ -54,7 +53,7 @@ func (r *TaskRepository) Create(ctx context.Context, task *models.Task) error {
 // GetByID retrieves a task by ID
 func (r *TaskRepository) GetByID(ctx context.Context, id int64) (*models.Task, error) {
 	query := `
-		SELECT id, launch_id, milestone_id, title, description, assignee_id, status, priority, due_date, created_at, updated_at, deleted_at
+		SELECT id, launch_id, title, description, assignee_id, status, priority, due_date, created_at, updated_at, deleted_at
 		FROM tasks
 		WHERE id = $1 AND deleted_at IS NULL`
 
@@ -71,23 +70,15 @@ func (r *TaskRepository) GetByID(ctx context.Context, id int64) (*models.Task, e
 }
 
 // ListByLaunchID retrieves all tasks for a launch
-func (r *TaskRepository) ListByLaunchID(ctx context.Context, launchID int64, milestoneID *int64) ([]*models.Task, error) {
+func (r *TaskRepository) ListByLaunchID(ctx context.Context, launchID int64) ([]*models.Task, error) {
 	query := `
-		SELECT id, launch_id, milestone_id, title, description, assignee_id, status, priority, due_date, created_at, updated_at
+		SELECT id, launch_id, title, description, assignee_id, status, priority, due_date, created_at, updated_at
 		FROM tasks
-		WHERE launch_id = $1 AND deleted_at IS NULL`
-
-	args := []interface{}{launchID}
-
-	if milestoneID != nil {
-		query += " AND milestone_id = $2"
-		args = append(args, *milestoneID)
-	}
-
-	query += " ORDER BY created_at DESC"
+		WHERE launch_id = $1 AND deleted_at IS NULL
+		ORDER BY created_at DESC`
 
 	var tasks []*models.Task
-	err := r.db.SelectContext(ctx, &tasks, query, args...)
+	err := r.db.SelectContext(ctx, &tasks, query, launchID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list tasks: %w", err)
 	}
@@ -134,12 +125,6 @@ func (r *TaskRepository) Update(ctx context.Context, id int64, req *models.Updat
 	if req.DueDate != nil {
 		updates = append(updates, fmt.Sprintf("due_date = $%d", argPos))
 		args = append(args, *req.DueDate)
-		argPos++
-	}
-
-	if req.MilestoneID != nil {
-		updates = append(updates, fmt.Sprintf("milestone_id = $%d", argPos))
-		args = append(args, *req.MilestoneID)
 		argPos++
 	}
 

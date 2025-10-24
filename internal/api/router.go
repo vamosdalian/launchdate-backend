@@ -28,18 +28,6 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			launches.DELETE("/:id", handler.DeleteLaunch)
 		}
 
-		// Milestones
-		milestones := v1.Group("/milestones")
-		{
-			milestones.POST("", handler.CreateMilestone)
-			milestones.GET("/:id", handler.GetMilestone)
-			milestones.PUT("/:id", handler.UpdateMilestone)
-			milestones.DELETE("/:id", handler.DeleteMilestone)
-		}
-
-		// Launch milestones
-		v1.GET("/launches/:launch_id/milestones", handler.ListLaunchMilestones)
-
 		// Tasks
 		tasks := v1.Group("/tasks")
 		{
