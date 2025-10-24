@@ -51,7 +51,7 @@ func main() {
 
 	// Create HTTP server
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Server.Port),
+		Addr:         fmt.Sprintf(":%s", cfg.Server.Port),
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
@@ -60,7 +60,7 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
-		logger.Infof("server starting on port %d", cfg.Server.Port)
+		logger.Infof("server starting on port %s", cfg.Server.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Fatalf("failed to start server: %v", err)
 		}

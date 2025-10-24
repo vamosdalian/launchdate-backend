@@ -55,6 +55,9 @@ func (h *Handler) ListRocketLaunches(c *gin.Context) {
 		limit = 100
 	}
 
+	// Future enhancement: add support for after_date, before_date, location_id, pad_id, provider_id filters
+	// These can be added to the service and repository layers as needed
+
 	rocketLaunches, err := h.rocketLaunchService.ListRocketLaunches(c.Request.Context(), status, limit, offset)
 	if err != nil {
 		h.logger.Printf("failed to list rocket launches: %v", err)
@@ -78,13 +81,35 @@ func (h *Handler) UpdateRocketLaunch(c *gin.Context) {
 		return
 	}
 
+	status := req.Status
+	if status == "" {
+		status = "scheduled"
+	}
+
 	rocketLaunch := &models.RocketLaunch{
-		Name:         req.Name,
-		LaunchDate:   req.LaunchDate,
-		RocketID:     req.RocketID,
-		LaunchBaseID: req.LaunchBaseID,
-		Status:       req.Status,
-		Description:  req.Description,
+		CosparID:           req.CosparID,
+		SortDate:           req.SortDate,
+		Name:               req.Name,
+		ProviderID:         req.ProviderID,
+		RocketID:           req.RocketID,
+		LaunchBaseID:       req.LaunchBaseID,
+		MissionDescription: req.MissionDescription,
+		LaunchDescription:  req.LaunchDescription,
+		WindowOpen:         req.WindowOpen,
+		T0:                 req.T0,
+		WindowClose:        req.WindowClose,
+		DateStr:            req.DateStr,
+		Slug:               req.Slug,
+		WeatherSummary:     req.WeatherSummary,
+		WeatherTemp:        req.WeatherTemp,
+		WeatherCondition:   req.WeatherCondition,
+		WeatherWindMPH:     req.WeatherWindMPH,
+		WeatherIcon:        req.WeatherIcon,
+		WeatherUpdated:     req.WeatherUpdated,
+		QuickText:          req.QuickText,
+		Suborbital:         req.Suborbital,
+		Modified:           req.Modified,
+		Status:             status,
 	}
 
 	if err := h.rocketLaunchService.UpdateRocketLaunch(c.Request.Context(), id, rocketLaunch); err != nil {
