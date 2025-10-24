@@ -19,44 +19,72 @@ func NewRocketLaunchRepository(db *sqlx.DB) *RocketLaunchRepository {
 
 func (r *RocketLaunchRepository) Create(rocketLaunch *models.RocketLaunch) error {
 	query := `
-		INSERT INTO rocket_launches (name, launch_date, rocket_id, launch_base_id, status, description)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO rocket_launches (
+			cospar_id, sort_date, name, provider_id, rocket_id, launch_base_id,
+			mission_description, launch_description, window_open, t0, window_close,
+			date_str, slug, weather_summary, weather_temp, weather_condition,
+			weather_wind_mph, weather_icon, weather_updated, quicktext, suborbital,
+			modified, status
+		)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
 		RETURNING id, created_at, updated_at
 	`
 	return r.db.QueryRow(
 		query,
+		rocketLaunch.CosparID,
+		rocketLaunch.SortDate,
 		rocketLaunch.Name,
-		rocketLaunch.LaunchDate,
+		rocketLaunch.ProviderID,
 		rocketLaunch.RocketID,
 		rocketLaunch.LaunchBaseID,
+		rocketLaunch.MissionDescription,
+		rocketLaunch.LaunchDescription,
+		rocketLaunch.WindowOpen,
+		rocketLaunch.T0,
+		rocketLaunch.WindowClose,
+		rocketLaunch.DateStr,
+		rocketLaunch.Slug,
+		rocketLaunch.WeatherSummary,
+		rocketLaunch.WeatherTemp,
+		rocketLaunch.WeatherCondition,
+		rocketLaunch.WeatherWindMPH,
+		rocketLaunch.WeatherIcon,
+		rocketLaunch.WeatherUpdated,
+		rocketLaunch.QuickText,
+		rocketLaunch.Suborbital,
+		rocketLaunch.Modified,
 		rocketLaunch.Status,
-		rocketLaunch.Description,
 	).Scan(&rocketLaunch.ID, &rocketLaunch.CreatedAt, &rocketLaunch.UpdatedAt)
 }
 
 func (r *RocketLaunchRepository) GetByID(id int64) (*models.RocketLaunch, error) {
 	var rocketLaunch models.RocketLaunch
 	query := `
-		SELECT rl.*, r.name as rocket, lb.name as launchBase
+		SELECT rl.*
 		FROM rocket_launches rl
-		LEFT JOIN rockets r ON rl.rocket_id = r.id
-		LEFT JOIN launch_bases lb ON rl.launch_base_id = lb.id
 		WHERE rl.id = $1 AND rl.deleted_at IS NULL
 	`
 	err := r.db.Get(&rocketLaunch, query, id)
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("rocket launch not found")
 	}
-	return &rocketLaunch, err
+	if err != nil {
+		return nil, err
+	}
+
+	// Load related entities
+	if err := r.loadRelatedEntities(&rocketLaunch); err != nil {
+		return nil, err
+	}
+
+	return &rocketLaunch, nil
 }
 
 func (r *RocketLaunchRepository) List(status *string, limit, offset int) ([]models.RocketLaunch, error) {
 	rocketLaunches := []models.RocketLaunch{}
 	query := `
-		SELECT rl.*, r.name as rocket, lb.name as launchBase
+		SELECT rl.*
 		FROM rocket_launches rl
-		LEFT JOIN rockets r ON rl.rocket_id = r.id
-		LEFT JOIN launch_bases lb ON rl.launch_base_id = lb.id
 		WHERE rl.deleted_at IS NULL
 	`
 	args := []interface{}{}
@@ -68,28 +96,123 @@ func (r *RocketLaunchRepository) List(status *string, limit, offset int) ([]mode
 		argIndex++
 	}
 
-	query += fmt.Sprintf(" ORDER BY rl.launch_date DESC LIMIT $%d OFFSET $%d", argIndex, argIndex+1)
+	query += fmt.Sprintf(" ORDER BY COALESCE(rl.t0, rl.window_open, rl.created_at) DESC LIMIT $%d OFFSET $%d", argIndex, argIndex+1)
 	args = append(args, limit, offset)
 
 	err := r.db.Select(&rocketLaunches, query, args...)
-	return rocketLaunches, err
+	if err != nil {
+		return nil, err
+	}
+
+	// Load related entities for each launch
+	for i := range rocketLaunches {
+		if err := r.loadRelatedEntities(&rocketLaunches[i]); err != nil {
+			return nil, err
+		}
+	}
+
+	return rocketLaunches, nil
+}
+
+// loadRelatedEntities loads provider, vehicle, pad, missions, and tags for a rocket launch
+func (r *RocketLaunchRepository) loadRelatedEntities(rl *models.RocketLaunch) error {
+	// Load provider
+	if rl.ProviderID != nil {
+		var provider models.RocketLaunchProvider
+		providerQuery := `SELECT id, name, '' as slug FROM companies WHERE id = $1`
+		if err := r.db.Get(&provider, providerQuery, *rl.ProviderID); err != nil && err != sql.ErrNoRows {
+			return err
+		}
+		if provider.ID > 0 {
+			rl.Provider = &provider
+		}
+	}
+
+	// Load vehicle (rocket)
+	if rl.RocketID != nil {
+		var vehicle models.RocketLaunchVehicle
+		vehicleQuery := `SELECT id, name, company_id, '' as slug FROM rockets WHERE id = $1`
+		if err := r.db.Get(&vehicle, vehicleQuery, *rl.RocketID); err != nil && err != sql.ErrNoRows {
+			return err
+		}
+		if vehicle.ID > 0 {
+			rl.Vehicle = &vehicle
+		}
+	}
+
+	// Load pad (launch base)
+	if rl.LaunchBaseID != nil {
+		var pad models.RocketLaunchPad
+		padQuery := `SELECT id, name FROM launch_bases WHERE id = $1`
+		if err := r.db.Get(&pad, padQuery, *rl.LaunchBaseID); err != nil && err != sql.ErrNoRows {
+			return err
+		}
+		if pad.ID > 0 {
+			// Load location details for the pad
+			var location models.RocketLaunchPadLocation
+			locationQuery := `SELECT id, name, country, '' as state, '' as statename, '' as slug FROM launch_bases WHERE id = $1`
+			if err := r.db.Get(&location, locationQuery, *rl.LaunchBaseID); err == nil {
+				pad.Location = &location
+			}
+			rl.Pad = &pad
+		}
+	}
+
+	// Load missions
+	missionsQuery := `SELECT id, name, description FROM rocket_launch_missions WHERE rocket_launch_id = $1`
+	missions := []models.RocketLaunchMission{}
+	if err := r.db.Select(&missions, missionsQuery, rl.ID); err != nil && err != sql.ErrNoRows {
+		return err
+	}
+	rl.Missions = missions
+
+	// Load tags
+	tagsQuery := `SELECT id, text FROM rocket_launch_tags WHERE rocket_launch_id = $1`
+	tags := []models.RocketLaunchTag{}
+	if err := r.db.Select(&tags, tagsQuery, rl.ID); err != nil && err != sql.ErrNoRows {
+		return err
+	}
+	rl.Tags = tags
+
+	return nil
 }
 
 func (r *RocketLaunchRepository) Update(id int64, rocketLaunch *models.RocketLaunch) error {
 	query := `
 		UPDATE rocket_launches
-		SET name = $1, launch_date = $2, rocket_id = $3, launch_base_id = $4,
-		    status = $5, description = $6
-		WHERE id = $7 AND deleted_at IS NULL
+		SET cospar_id = $1, sort_date = $2, name = $3, provider_id = $4, rocket_id = $5, 
+		    launch_base_id = $6, mission_description = $7, launch_description = $8,
+		    window_open = $9, t0 = $10, window_close = $11, date_str = $12, slug = $13,
+		    weather_summary = $14, weather_temp = $15, weather_condition = $16,
+		    weather_wind_mph = $17, weather_icon = $18, weather_updated = $19,
+		    quicktext = $20, suborbital = $21, modified = $22, status = $23
+		WHERE id = $24 AND deleted_at IS NULL
 	`
 	result, err := r.db.Exec(
 		query,
+		rocketLaunch.CosparID,
+		rocketLaunch.SortDate,
 		rocketLaunch.Name,
-		rocketLaunch.LaunchDate,
+		rocketLaunch.ProviderID,
 		rocketLaunch.RocketID,
 		rocketLaunch.LaunchBaseID,
+		rocketLaunch.MissionDescription,
+		rocketLaunch.LaunchDescription,
+		rocketLaunch.WindowOpen,
+		rocketLaunch.T0,
+		rocketLaunch.WindowClose,
+		rocketLaunch.DateStr,
+		rocketLaunch.Slug,
+		rocketLaunch.WeatherSummary,
+		rocketLaunch.WeatherTemp,
+		rocketLaunch.WeatherCondition,
+		rocketLaunch.WeatherWindMPH,
+		rocketLaunch.WeatherIcon,
+		rocketLaunch.WeatherUpdated,
+		rocketLaunch.QuickText,
+		rocketLaunch.Suborbital,
+		rocketLaunch.Modified,
 		rocketLaunch.Status,
-		rocketLaunch.Description,
 		id,
 	)
 	if err != nil {

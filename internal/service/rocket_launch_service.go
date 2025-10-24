@@ -28,12 +28,29 @@ func (s *RocketLaunchService) CreateRocketLaunch(ctx context.Context, req *model
 	}
 
 	rocketLaunch := &models.RocketLaunch{
-		Name:         req.Name,
-		LaunchDate:   req.LaunchDate,
-		RocketID:     req.RocketID,
-		LaunchBaseID: req.LaunchBaseID,
-		Status:       status,
-		Description:  req.Description,
+		CosparID:           req.CosparID,
+		SortDate:           req.SortDate,
+		Name:               req.Name,
+		ProviderID:         req.ProviderID,
+		RocketID:           req.RocketID,
+		LaunchBaseID:       req.LaunchBaseID,
+		MissionDescription: req.MissionDescription,
+		LaunchDescription:  req.LaunchDescription,
+		WindowOpen:         req.WindowOpen,
+		T0:                 req.T0,
+		WindowClose:        req.WindowClose,
+		DateStr:            req.DateStr,
+		Slug:               req.Slug,
+		WeatherSummary:     req.WeatherSummary,
+		WeatherTemp:        req.WeatherTemp,
+		WeatherCondition:   req.WeatherCondition,
+		WeatherWindMPH:     req.WeatherWindMPH,
+		WeatherIcon:        req.WeatherIcon,
+		WeatherUpdated:     req.WeatherUpdated,
+		QuickText:          req.QuickText,
+		Suborbital:         req.Suborbital,
+		Modified:           req.Modified,
+		Status:             status,
 	}
 
 	err := s.repo.Create(rocketLaunch)
