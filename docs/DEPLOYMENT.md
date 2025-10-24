@@ -484,12 +484,12 @@ DB_SSLMODE=require
 
 **Migration service stuck in Waiting state:**
 - Ensure the migrate service does not have `restart: on-failure` in docker-compose.yml
-- When using `depends_on` with `condition: service_completed_successfully`, the service should have no restart policy or `restart: no`
+- When using `depends_on` with `condition: service_completed_successfully`, the dependent service (migrate) should have no restart policy or `restart: no`, as restart policies conflict with the expectation that the service will run once and exit
 - Check migration logs: `docker compose logs migrate`
 - Verify PostgreSQL is healthy: `docker compose ps postgres`
 
 **Application not starting:**
-- Check logs: `docker-compose logs app`
+- Check logs: `docker compose logs app`
 - Verify all required environment variables
 - Check database migrations have run
 
