@@ -108,6 +108,7 @@ CREATE INDEX idx_comments_user_id ON comments(user_id);
 CREATE INDEX idx_comments_deleted_at ON comments(deleted_at);
 
 -- Create triggers for updated_at
+-- Note: This assumes the update_updated_at_column() function exists from migration 001
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_teams_updated_at BEFORE UPDATE ON teams FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_launches_updated_at BEFORE UPDATE ON launches FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
