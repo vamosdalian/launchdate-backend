@@ -9,8 +9,6 @@ import (
 
 // Handler holds all API handlers
 type Handler struct {
-	launchService       *service.LaunchService
-	taskService         *service.TaskService
 	rocketService       *service.RocketService
 	companyService      *service.CompanyService
 	launchBaseService   *service.LaunchBaseService
@@ -24,8 +22,6 @@ type Handler struct {
 // NewHandler creates a new handler
 func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Logger) *Handler {
 	// Initialize repositories
-	launchRepo := repository.NewLaunchRepository(db)
-	taskRepo := repository.NewTaskRepository(db)
 	rocketRepo := repository.NewRocketRepository(db.DB)
 	companyRepo := repository.NewCompanyRepository(db.DB)
 	launchBaseRepo := repository.NewLaunchBaseRepository(db.DB)
@@ -33,8 +29,6 @@ func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Log
 	newsRepo := repository.NewNewsRepository(db.DB)
 
 	// Initialize services
-	launchService := service.NewLaunchService(launchRepo, cache)
-	taskService := service.NewTaskService(taskRepo, cache)
 	rocketService := service.NewRocketService(rocketRepo, cache)
 	companyService := service.NewCompanyService(companyRepo, cache)
 	launchBaseService := service.NewLaunchBaseService(launchBaseRepo, cache)
@@ -42,8 +36,6 @@ func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Log
 	newsService := service.NewNewsService(newsRepo, cache)
 
 	return &Handler{
-		launchService:       launchService,
-		taskService:         taskService,
 		rocketService:       rocketService,
 		companyService:      companyService,
 		launchBaseService:   launchBaseService,
