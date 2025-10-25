@@ -26,6 +26,8 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			launches.GET("/:id", handler.GetLaunch)
 			launches.PUT("/:id", handler.UpdateLaunch)
 			launches.DELETE("/:id", handler.DeleteLaunch)
+			// Launch tasks - must use consistent parameter name ":id" instead of ":launch_id"
+			launches.GET("/:id/tasks", handler.ListLaunchTasks)
 		}
 
 		// Tasks
@@ -36,9 +38,6 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			tasks.PUT("/:id", handler.UpdateTask)
 			tasks.DELETE("/:id", handler.DeleteTask)
 		}
-
-		// Launch tasks
-		v1.GET("/launches/:launch_id/tasks", handler.ListLaunchTasks)
 
 		// Rockets
 		rockets := v1.Group("/rockets")
