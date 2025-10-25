@@ -18,27 +18,6 @@ func SetupRouter(handler *Handler) *gin.Engine {
 	// API v1
 	v1 := router.Group("/api/v1")
 	{
-		// Launches (Product/Project Launches)
-		launches := v1.Group("/launches")
-		{
-			launches.GET("", handler.ListLaunches)
-			launches.POST("", handler.CreateLaunch)
-			launches.GET("/:id", handler.GetLaunch)
-			launches.PUT("/:id", handler.UpdateLaunch)
-			launches.DELETE("/:id", handler.DeleteLaunch)
-			// Launch tasks - must use consistent parameter name ":id" instead of ":launch_id"
-			launches.GET("/:id/tasks", handler.ListLaunchTasks)
-		}
-
-		// Tasks
-		tasks := v1.Group("/tasks")
-		{
-			tasks.POST("", handler.CreateTask)
-			tasks.GET("/:id", handler.GetTask)
-			tasks.PUT("/:id", handler.UpdateTask)
-			tasks.DELETE("/:id", handler.DeleteTask)
-		}
-
 		// Rockets
 		rockets := v1.Group("/rockets")
 		{

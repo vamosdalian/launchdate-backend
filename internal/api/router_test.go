@@ -24,24 +24,24 @@ func TestSetupRouter_NoPanic(t *testing.T) {
 		t.Fatal("Expected routes to be registered, got 0")
 	}
 
-	// Verify the specific routes we care about
-	foundGetLaunch := false
-	foundListLaunchTasks := false
+	// Verify the specific routes we care about (rocket launch related)
+	foundGetRocket := false
+	foundGetRocketLaunch := false
 
 	for _, route := range routes {
-		if route.Method == "GET" && route.Path == "/api/v1/launches/:id" {
-			foundGetLaunch = true
+		if route.Method == "GET" && route.Path == "/api/v1/rockets/:id" {
+			foundGetRocket = true
 		}
-		if route.Method == "GET" && route.Path == "/api/v1/launches/:id/tasks" {
-			foundListLaunchTasks = true
+		if route.Method == "GET" && route.Path == "/api/v1/rocket-launches/:id" {
+			foundGetRocketLaunch = true
 		}
 	}
 
-	if !foundGetLaunch {
-		t.Error("Expected GET /api/v1/launches/:id route to be registered")
+	if !foundGetRocket {
+		t.Error("Expected GET /api/v1/rockets/:id route to be registered")
 	}
 
-	if !foundListLaunchTasks {
-		t.Error("Expected GET /api/v1/launches/:id/tasks route to be registered")
+	if !foundGetRocketLaunch {
+		t.Error("Expected GET /api/v1/rocket-launches/:id route to be registered")
 	}
 }
