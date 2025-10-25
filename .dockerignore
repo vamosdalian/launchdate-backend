@@ -26,9 +26,6 @@ docker-compose.yml
 # CI/CD
 .github/
 
-# Dependencies (will be downloaded during build)
-vendor/
-
 # Test files
 *_test.go
 
