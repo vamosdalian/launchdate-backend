@@ -5,50 +5,39 @@ import (
 	"time"
 )
 
-func TestLaunchModel(t *testing.T) {
+func TestRocketLaunchModel(t *testing.T) {
 	now := time.Now()
-	launch := &Launch{
-		ID:          1,
-		Title:       "Test Launch",
-		Description: "Test Description",
-		LaunchDate:  now,
-		Status:      "draft",
-		Priority:    "high",
-		OwnerID:     1,
-		Tags:        []string{"test", "launch"},
-		CreatedAt:   now,
-		UpdatedAt:   now,
+	rocketLaunch := &RocketLaunch{
+		ID:                1,
+		Name:              "Test Rocket Launch",
+		Status:            "scheduled",
+		LaunchDescription: "Test launch description",
+		CreatedAt:         now,
+		UpdatedAt:         now,
 	}
 
-	if launch.Title != "Test Launch" {
-		t.Errorf("Expected title 'Test Launch', got '%s'", launch.Title)
+	if rocketLaunch.Name != "Test Rocket Launch" {
+		t.Errorf("Expected name 'Test Rocket Launch', got '%s'", rocketLaunch.Name)
 	}
 
-	if launch.Status != "draft" {
-		t.Errorf("Expected status 'draft', got '%s'", launch.Status)
-	}
-
-	if len(launch.Tags) != 2 {
-		t.Errorf("Expected 2 tags, got %d", len(launch.Tags))
+	if rocketLaunch.Status != "scheduled" {
+		t.Errorf("Expected status 'scheduled', got '%s'", rocketLaunch.Status)
 	}
 }
 
-func TestCreateLaunchRequest(t *testing.T) {
-	now := time.Now()
-	req := &CreateLaunchRequest{
-		Title:       "New Launch",
-		Description: "New Description",
-		LaunchDate:  now,
-		Status:      "planned",
-		Priority:    "medium",
-		Tags:        []string{"new"},
+func TestCreateRocketLaunchRequest(t *testing.T) {
+	req := &CreateRocketLaunchRequest{
+		Name:              "New Rocket Launch",
+		DateStr:           "2024-01-01",
+		LaunchDescription: "New launch description",
+		Status:            "scheduled",
 	}
 
-	if req.Title != "New Launch" {
-		t.Errorf("Expected title 'New Launch', got '%s'", req.Title)
+	if req.Name != "New Rocket Launch" {
+		t.Errorf("Expected name 'New Rocket Launch', got '%s'", req.Name)
 	}
 
-	if req.Priority != "medium" {
-		t.Errorf("Expected priority 'medium', got '%s'", req.Priority)
+	if req.Status != "scheduled" {
+		t.Errorf("Expected status 'scheduled', got '%s'", req.Status)
 	}
 }

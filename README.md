@@ -1,13 +1,8 @@
 # LaunchDate Backend
 
-Backend API for the LaunchDate platform - supporting both product/project launch management and rocket launch tracking.
+Backend API for the LaunchDate platform - rocket launch tracking and space news.
 
 ## Features
-
-### Product Launch Management
-- 🚀 **Launch Management**: Create and manage product/project launches
-- ✅ **Task Management**: Manage tasks associated with launches
-- 👥 **Team Collaboration**: User and team management
 
 ### Rocket Launch Tracking
 - 🚁 **Company Management**: Track space companies and their details
@@ -115,22 +110,6 @@ You can view the documentation using tools like:
 
 #### Health Check
 - `GET /health` - Check service health
-
-#### Product Launch Management
-
-**Launches**
-- `GET /api/v1/launches` - List all launches
-- `POST /api/v1/launches` - Create a new launch
-- `GET /api/v1/launches/{id}` - Get launch details
-- `PUT /api/v1/launches/{id}` - Update a launch
-- `DELETE /api/v1/launches/{id}` - Delete a launch
-
-**Tasks**
-- `GET /api/v1/launches/{launch_id}/tasks` - List tasks for a launch
-- `POST /api/v1/tasks` - Create a new task
-- `GET /api/v1/tasks/{id}` - Get task details
-- `PUT /api/v1/tasks/{id}` - Update a task
-- `DELETE /api/v1/tasks/{id}` - Delete a task
 
 #### Rocket Launch Tracking
 
