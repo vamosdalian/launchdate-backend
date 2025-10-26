@@ -35,7 +35,7 @@ Backend API for the LaunchDate platform - rocket launch tracking and space news.
 - Go 1.21 or later
 - PostgreSQL 15
 - Redis 7
-- Docker & Docker Compose (optional)
+- Docker (optional)
 
 ### Installation
 
@@ -52,20 +52,6 @@ cp .env.example .env
 
 3. Update the `.env` file with your configuration.
 
-### Running with Docker Compose (Recommended)
-
-The easiest way to run the application is with Docker Compose:
-
-```bash
-docker-compose up -d
-```
-
-This will start:
-- PostgreSQL database
-- Redis cache
-- Database migrations
-- Application server on http://localhost:8080
-
 ### Running Locally
 
 1. Install dependencies:
@@ -80,7 +66,13 @@ docker run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgre
 docker run -d --name redis -p 6379:6379 redis:7-alpine
 ```
 
-3. Run migrations:
+3. Create the database:
+```bash
+# Connect to PostgreSQL and create the database
+docker exec -it postgres psql -U postgres -c "CREATE DATABASE launchdate;"
+```
+
+4. Run migrations:
 ```bash
 # Install migrate CLI
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
@@ -89,7 +81,7 @@ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@lat
 migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/launchdate?sslmode=disable" up
 ```
 
-4. Start the server:
+5. Start the server:
 ```bash
 go run cmd/server/main.go
 ```
@@ -167,7 +159,6 @@ You can view the documentation using tools like:
 ├── .github/
 │   └── workflows/       # CI/CD workflows
 ├── Dockerfile           # Docker image definition
-├── docker-compose.yml   # Docker Compose configuration
 └── README.md
 ```
 

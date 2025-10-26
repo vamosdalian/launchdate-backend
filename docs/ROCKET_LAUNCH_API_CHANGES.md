@@ -202,9 +202,6 @@ To apply the migration:
 ```bash
 # Using migrate CLI
 migrate -path migrations -database "postgres://user:pass@localhost:5432/launchdate?sslmode=disable" up
-
-# Using Docker Compose
-docker-compose exec app migrate -path migrations -database "$DATABASE_URL" up
 ```
 
 To rollback:

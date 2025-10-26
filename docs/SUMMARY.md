@@ -31,7 +31,6 @@ This is a complete, production-ready Go backend for a dual-purpose launch manage
 
 ### Infrastructure
 - **Containerization**: Docker with multi-stage builds
-- **Orchestration**: Docker Compose
 - **CI/CD**: GitHub Actions
 - **Image Registry**: GitHub Container Registry (GHCR)
 - **Container Base**: Distroless (security-focused)
@@ -131,7 +130,6 @@ launchdate-backend/
 ├── .github/workflows/       # CI/CD pipelines
 │   └── ci.yml
 ├── Dockerfile               # Container image
-├── docker-compose.yml       # Local development
 ├── Makefile                 # Build automation
 ├── .gitignore
 ├── .dockerignore
@@ -288,7 +286,6 @@ launchdate-backend/
 
 ### Developer Experience
 - **Makefile**: Common commands (build, test, run, lint)
-- **Docker Compose**: One-command local setup
 - **Hot Reload**: Can integrate with air/reflex
 - **Comprehensive Docs**: API, deployment, and contribution guides
 - **Examples**: curl commands in documentation
@@ -325,7 +322,19 @@ launchdate-backend/
 
 ### Local Development
 ```bash
-docker-compose up -d
+# Start PostgreSQL and Redis
+docker run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:15-alpine
+docker run -d --name redis -p 6379:6379 redis:7-alpine
+
+# Create database
+docker exec -it postgres psql -U postgres -c "CREATE DATABASE launchdate;"
+
+# Run migrations
+make migrate-up
+
+# Start server
+make run
+
 # Access at http://localhost:8080
 ```
 
