@@ -11,6 +11,7 @@ func TestConvertExternalLaunch(t *testing.T) {
 	service := &RocketLaunchService{}
 
 	now := time.Now()
+	flexTime := &models.FlexibleTime{Time: now}
 	temp := float32(75.5)
 	wind := float32(10.0)
 
@@ -20,9 +21,9 @@ func TestConvertExternalLaunch(t *testing.T) {
 		Name:               "Test Launch",
 		MissionDescription: "Test Mission",
 		LaunchDescription:  "Test Description",
-		WindowOpen:         &now,
-		T0:                 &now,
-		WindowClose:        &now,
+		WindowOpen:         flexTime,
+		T0:                 flexTime,
+		WindowClose:        flexTime,
 		DateStr:            "Oct 24, 2025",
 		Slug:               "test-launch",
 		WeatherSummary:     "Clear",
@@ -30,10 +31,10 @@ func TestConvertExternalLaunch(t *testing.T) {
 		WeatherCondition:   "Sunny",
 		WeatherWindMPH:     &wind,
 		WeatherIcon:        "sun",
-		WeatherUpdated:     &now,
+		WeatherUpdated:     flexTime,
 		QuickText:          "Quick text",
 		Suborbital:         false,
-		Modified:           &now,
+		Modified:           flexTime,
 	}
 
 	result := service.convertExternalLaunch(external)
