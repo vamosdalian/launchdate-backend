@@ -34,12 +34,17 @@ docker run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgre
 docker run -d --name redis -p 6379:6379 redis:7-alpine
 ```
 
-3. Run migrations:
+3. Create the database:
+```bash
+docker exec -it postgres psql -U postgres -c "CREATE DATABASE launchdate;"
+```
+
+4. Run migrations:
 ```bash
 make migrate-up
 ```
 
-4. Start the server:
+5. Start the server:
 ```bash
 make run
 ```
@@ -47,27 +52,6 @@ make run
 The API will be available at http://localhost:8080
 
 ## Docker Deployment
-
-### Using Docker Compose
-
-The simplest way to deploy is using Docker Compose:
-
-```bash
-# Start all services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-This will start:
-- PostgreSQL database
-- Redis cache
-- Database migrations
-- Application server
 
 ### Building Docker Image
 
@@ -483,13 +467,12 @@ DB_SSLMODE=require
 - Check if password is required
 
 **Migration service stuck in Waiting state:**
-- Ensure the migrate service does not have `restart: on-failure` in docker-compose.yml
-- When using `depends_on` with `condition: service_completed_successfully`, the dependent service (migrate) should have no restart policy or `restart: no`, as restart policies conflict with the expectation that the service will run once and exit
-- Check migration logs: `docker compose logs migrate`
-- Verify PostgreSQL is healthy: `docker compose ps postgres`
+- Check migration logs
+- Verify PostgreSQL is healthy
+- Ensure database exists before running migrations
 
 **Application not starting:**
-- Check logs: `docker compose logs app`
+- Check logs
 - Verify all required environment variables
 - Check database migrations have run
 

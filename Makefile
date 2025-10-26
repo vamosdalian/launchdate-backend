@@ -1,4 +1,4 @@
-.PHONY: help build run test clean docker-build docker-up docker-down migrate-up migrate-down lint fmt
+.PHONY: help build run test clean docker-build migrate-up migrate-down lint fmt
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -26,17 +26,6 @@ clean: ## Clean build artifacts
 docker-build: ## Build Docker image
 	@echo "Building Docker image..."
 	@docker build -t launchdate-backend:latest .
-
-docker-up: ## Start services with Docker Compose
-	@echo "Starting services..."
-	@docker-compose up -d
-
-docker-down: ## Stop services with Docker Compose
-	@echo "Stopping services..."
-	@docker-compose down
-
-docker-logs: ## View Docker logs
-	@docker-compose logs -f app
 
 migrate-up: ## Run database migrations
 	@echo "Running migrations..."

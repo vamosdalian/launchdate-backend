@@ -37,7 +37,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 - Go 1.21 or later
 - PostgreSQL 15
 - Redis 7
-- Docker & Docker Compose (recommended)
+- Docker (recommended)
 
 ### Quick Setup
 
@@ -48,20 +48,26 @@ By participating in this project, you agree to maintain a respectful and inclusi
 
 2. Start dependencies:
    ```bash
-   docker-compose up -d postgres redis
+   docker run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:15-alpine
+   docker run -d --name redis -p 6379:6379 redis:7-alpine
    ```
 
-3. Run migrations:
+3. Create the database:
+   ```bash
+   docker exec -it postgres psql -U postgres -c "CREATE DATABASE launchdate;"
+   ```
+
+4. Run migrations:
    ```bash
    make migrate-up
    ```
 
-4. Install dependencies:
+5. Install dependencies:
    ```bash
    make deps
    ```
 
-5. Run the application:
+6. Run the application:
    ```bash
    make run
    ```
