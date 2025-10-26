@@ -243,9 +243,9 @@ type ExternalRocketLaunch struct {
 	Missions           []RocketLaunchMission `json:"missions,omitempty"`
 	MissionDescription string                `json:"mission_description"`
 	LaunchDescription  string                `json:"launch_description"`
-	WindowOpen         *time.Time            `json:"win_open,omitempty"`
-	T0                 *time.Time            `json:"t0,omitempty"`
-	WindowClose        *time.Time            `json:"win_close,omitempty"`
+	WindowOpen         *FlexibleTime         `json:"win_open,omitempty"`
+	T0                 *FlexibleTime         `json:"t0,omitempty"`
+	WindowClose        *FlexibleTime         `json:"win_close,omitempty"`
 	DateStr            string                `json:"date_str"`
 	Tags               []RocketLaunchTag     `json:"tags,omitempty"`
 	Slug               string                `json:"slug"`
@@ -254,8 +254,8 @@ type ExternalRocketLaunch struct {
 	WeatherCondition   string                `json:"weather_condition"`
 	WeatherWindMPH     *float32              `json:"weather_wind_mph,omitempty"`
 	WeatherIcon        string                `json:"weather_icon"`
-	WeatherUpdated     *time.Time            `json:"weather_updated,omitempty"`
+	WeatherUpdated     *FlexibleTime         `json:"weather_updated,omitempty"`
 	QuickText          string                `json:"quicktext"`
 	Suborbital         bool                  `json:"suborbital"`
-	Modified           *time.Time            `json:"modified,omitempty"`
+	Modified           *FlexibleTime         `json:"modified,omitempty"`
 }

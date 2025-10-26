@@ -194,9 +194,9 @@ func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLa
 		Name:               ext.Name,
 		MissionDescription: ext.MissionDescription,
 		LaunchDescription:  ext.LaunchDescription,
-		WindowOpen:         ext.WindowOpen,
-		T0:                 ext.T0,
-		WindowClose:        ext.WindowClose,
+		WindowOpen:         convertFlexibleTime(ext.WindowOpen),
+		T0:                 convertFlexibleTime(ext.T0),
+		WindowClose:        convertFlexibleTime(ext.WindowClose),
 		DateStr:            ext.DateStr,
 		Slug:               ext.Slug,
 		WeatherSummary:     ext.WeatherSummary,
@@ -204,10 +204,10 @@ func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLa
 		WeatherCondition:   ext.WeatherCondition,
 		WeatherWindMPH:     ext.WeatherWindMPH,
 		WeatherIcon:        ext.WeatherIcon,
-		WeatherUpdated:     ext.WeatherUpdated,
+		WeatherUpdated:     convertFlexibleTime(ext.WeatherUpdated),
 		QuickText:          ext.QuickText,
 		Suborbital:         ext.Suborbital,
-		Modified:           ext.Modified,
+		Modified:           convertFlexibleTime(ext.Modified),
 		Status:             "scheduled", // Default status
 	}
 
@@ -216,4 +216,12 @@ func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLa
 	// These should be linked manually or through a separate matching process
 
 	return launch
+}
+
+// convertFlexibleTime converts *FlexibleTime to *time.Time
+func convertFlexibleTime(ft *models.FlexibleTime) *time.Time {
+	if ft == nil {
+		return nil
+	}
+	return ft.ToTimePtr()
 }
