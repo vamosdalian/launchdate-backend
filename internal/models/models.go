@@ -36,7 +36,7 @@ type Rocket struct {
 	Diameter    float64    `json:"diameter" db:"diameter"`
 	Mass        float64    `json:"mass" db:"mass"`
 	CompanyID   *int64     `json:"company_id,omitempty" db:"company_id"`
-	Company     string     `json:"company" db:"-"`
+	Company     *string    `json:"company,omitempty" db:"company"`
 	ImageURL    string     `json:"imageUrl" db:"image_url"`
 	Active      bool       `json:"active" db:"active"`
 	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
@@ -66,6 +66,7 @@ type RocketLaunch struct {
 	SortDate           string                `json:"sort_date" db:"sort_date"`
 	Name               string                `json:"name" db:"name"`
 	LaunchDate         time.Time             `json:"launch_date" db:"launch_date"`
+	Description        *string               `json:"description,omitempty" db:"description"`
 	Provider           *RocketLaunchProvider `json:"provider,omitempty" db:"-"`
 	ProviderID         *int64                `json:"provider_id,omitempty" db:"provider_id"`
 	Vehicle            *RocketLaunchVehicle  `json:"vehicle,omitempty" db:"-"`
