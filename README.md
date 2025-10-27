@@ -201,8 +201,10 @@ git push origin v1.0.0
 
 This will automatically:
 1. Build the Docker image
-2. Tag it with multiple versions: `v1.0.0`, `1.0`, `1`, and `latest`
+2. Tag it with multiple versions: `v1.0.0`, `1.0`, `1`, and `latest` (only for stable releases)
 3. Push to GHCR with multi-platform support (amd64, arm64)
+
+**Note:** Pre-release versions (e.g., `v1.0.0-alpha`, `v2.0.0-rc1`) will not update the `latest` tag.
 
 ### Pull the Docker Image
 
