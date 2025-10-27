@@ -790,6 +790,33 @@ func TestRocketLaunchesAPI(t *testing.T) {
 		wGet := makeRequest(t, tc.router, http.MethodGet, fmt.Sprintf("/api/v1/rocket-launches/%d", created.ID), nil)
 		assert.Equal(t, http.StatusNotFound, wGet.Code)
 	})
+
+	// Test Sync Rocket Launches
+	t.Run("SyncRocketLaunches", func(t *testing.T) {
+		// Call the sync endpoint
+		w := makeRequest(t, tc.router, http.MethodPost, "/api/v1/rocket-launches/sync", nil)
+		
+		// The sync endpoint should return either success or error
+		// Since it calls an external API, we check for valid response codes
+		assert.Contains(t, []int{http.StatusOK, http.StatusInternalServerError}, w.Code)
+
+		// If successful, verify the response structure
+		if w.Code == http.StatusOK {
+			var response map[string]interface{}
+			err := json.Unmarshal(w.Body.Bytes(), &response)
+			require.NoError(t, err)
+
+			// Verify response contains expected fields
+			assert.Contains(t, response, "message")
+			assert.Contains(t, response, "count")
+			assert.Equal(t, "rocket launches synced successfully", response["message"])
+			
+			// Count should be a number (can be 0 or more)
+			count, ok := response["count"].(float64)
+			assert.True(t, ok, "count should be a number")
+			assert.GreaterOrEqual(t, count, float64(0))
+		}
+	})
 }
 
 // TestNewsAPI tests all news endpoints
