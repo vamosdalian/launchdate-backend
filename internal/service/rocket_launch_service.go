@@ -162,19 +162,23 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context) (int, err
 		// Convert external launch to our model
 		rocketLaunch := s.convertExternalLaunch(&extLaunch)
 
+		// Check if launch with this external_id already exists
+		if rocketLaunch.ExternalID != nil {
+			existingLaunch, findErr := s.repo.GetByExternalID(*rocketLaunch.ExternalID)
+			if findErr == nil && existingLaunch != nil {
+				// Update existing launch
+				if updateErr := s.repo.Update(existingLaunch.ID, rocketLaunch); updateErr == nil {
+					savedCount++
+				}
+				continue
+			}
+		}
+
 		// Try to create the launch
 		err := s.repo.Create(rocketLaunch)
 		if err != nil {
-			// If creation fails (e.g., duplicate), try to update by slug
-			if rocketLaunch.Slug != "" {
-				existingLaunch, findErr := s.repo.GetBySlug(rocketLaunch.Slug)
-				if findErr == nil && existingLaunch != nil {
-					// Update existing launch
-					if updateErr := s.repo.Update(existingLaunch.ID, rocketLaunch); updateErr == nil {
-						savedCount++
-					}
-				}
-			}
+			// If creation fails due to duplicate external_id, skip it
+			// This handles race conditions or other edge cases
 			continue
 		}
 
@@ -199,6 +203,7 @@ func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLa
 	}
 
 	launch := &models.RocketLaunch{
+		ExternalID:         &ext.ID,
 		CosparID:           ext.CosparID,
 		SortDate:           ext.SortDate,
 		Name:               ext.Name,
