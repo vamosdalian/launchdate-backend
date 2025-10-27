@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/sirupsen/logrus"
+	"github.com/vamosdalian/launchdate-backend/internal/config"
 	"github.com/vamosdalian/launchdate-backend/internal/database"
 	"github.com/vamosdalian/launchdate-backend/internal/repository"
 	"github.com/vamosdalian/launchdate-backend/internal/service"
@@ -20,7 +21,7 @@ type Handler struct {
 }
 
 // NewHandler creates a new handler
-func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Logger) *Handler {
+func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Logger, cfg *config.Config) *Handler {
 	// Initialize repositories
 	rocketRepo := repository.NewRocketRepository(db.DB)
 	companyRepo := repository.NewCompanyRepository(db.DB)
@@ -32,7 +33,7 @@ func NewHandler(db *database.DB, cache *service.CacheService, logger *logrus.Log
 	rocketService := service.NewRocketService(rocketRepo, cache)
 	companyService := service.NewCompanyService(companyRepo, cache)
 	launchBaseService := service.NewLaunchBaseService(launchBaseRepo, cache)
-	rocketLaunchService := service.NewRocketLaunchService(rocketLaunchRepo, cache)
+	rocketLaunchService := service.NewRocketLaunchService(rocketLaunchRepo, companyRepo, launchBaseRepo, cache, &cfg.RocketLaunchAPI)
 	newsService := service.NewNewsService(newsRepo, cache)
 
 	return &Handler{

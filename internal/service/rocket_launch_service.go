@@ -7,19 +7,32 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/vamosdalian/launchdate-backend/internal/config"
 	"github.com/vamosdalian/launchdate-backend/internal/models"
 	"github.com/vamosdalian/launchdate-backend/internal/repository"
 )
 
 type RocketLaunchService struct {
-	repo  *repository.RocketLaunchRepository
-	cache *CacheService
+	repo           *repository.RocketLaunchRepository
+	companyRepo    *repository.CompanyRepository
+	launchBaseRepo *repository.LaunchBaseRepository
+	cache          *CacheService
+	apiConfig      *config.RocketLaunchAPIConfig
 }
 
-func NewRocketLaunchService(repo *repository.RocketLaunchRepository, cache *CacheService) *RocketLaunchService {
+func NewRocketLaunchService(
+	repo *repository.RocketLaunchRepository,
+	companyRepo *repository.CompanyRepository,
+	launchBaseRepo *repository.LaunchBaseRepository,
+	cache *CacheService,
+	apiConfig *config.RocketLaunchAPIConfig,
+) *RocketLaunchService {
 	return &RocketLaunchService{
-		repo:  repo,
-		cache: cache,
+		repo:           repo,
+		companyRepo:    companyRepo,
+		launchBaseRepo: launchBaseRepo,
+		cache:          cache,
+		apiConfig:      apiConfig,
 	}
 }
 
@@ -137,10 +150,29 @@ func (s *RocketLaunchService) DeleteRocketLaunch(ctx context.Context, id int64) 
 	return nil
 }
 
-// SyncLaunchesFromAPI fetches the latest rocket launches from RocketLaunch.Live API and saves them to the database
-func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context) (int, error) {
-	// Fetch data from the external API
-	resp, err := http.Get("https://fdo.rocketlaunch.live/json/launches/next/5")
+// SyncLaunchesFromAPI fetches rocket launches from RocketLaunch.Live API and saves them to the database
+func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context, limit int) (int, error) {
+	if limit <= 0 {
+		limit = 10 // Default limit
+	}
+
+	// Build API URL
+	apiURL := fmt.Sprintf("%s/launches/next/%d", s.apiConfig.BaseURL, limit)
+
+	// Create HTTP client and request
+	client := &http.Client{Timeout: 30 * time.Second}
+	req, err := http.NewRequestWithContext(ctx, "GET", apiURL, nil)
+	if err != nil {
+		return 0, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	// Add API key if available
+	if s.apiConfig.APIKey != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.apiConfig.APIKey))
+	}
+
+	// Execute request
+	resp, err := client.Do(req)
 	if err != nil {
 		return 0, fmt.Errorf("failed to fetch launches from API: %w", err)
 	}
@@ -159,6 +191,22 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context) (int, err
 	// Save launches to the database
 	savedCount := 0
 	for _, extLaunch := range apiResponse.Result {
+		// Sync provider (company) if available
+		if extLaunch.Provider != nil && extLaunch.Provider.ID > 0 {
+			if err := s.syncCompany(extLaunch.Provider); err != nil {
+				// Log error but continue processing
+				fmt.Printf("Failed to sync company %d: %v\n", extLaunch.Provider.ID, err)
+			}
+		}
+
+		// Sync pad location if available
+		if extLaunch.Pad != nil && extLaunch.Pad.Location != nil && extLaunch.Pad.Location.ID > 0 {
+			if err := s.syncLocation(extLaunch.Pad.Location); err != nil {
+				// Log error but continue processing
+				fmt.Printf("Failed to sync location %d: %v\n", extLaunch.Pad.Location.ID, err)
+			}
+		}
+
 		// Convert external launch to our model
 		rocketLaunch := s.convertExternalLaunch(&extLaunch)
 
@@ -240,4 +288,59 @@ func convertFlexibleTime(ft *models.FlexibleTime) *time.Time {
 		return nil
 	}
 	return ft.ToTimePtr()
+}
+
+// syncCompany syncs a company from the external API to the database
+func (s *RocketLaunchService) syncCompany(provider *models.RocketLaunchProvider) error {
+	if provider == nil || provider.ID == 0 {
+		return nil
+	}
+
+	externalID := int64(provider.ID)
+
+	// Check if company already exists with this external_id
+	existingCompany, err := s.companyRepo.GetByExternalID(externalID)
+	if err == nil && existingCompany != nil {
+		// Company exists, update if needed
+		existingCompany.Name = provider.Name
+		return s.companyRepo.Update(existingCompany.ID, existingCompany)
+	}
+
+	// Create new company
+	company := &models.Company{
+		ExternalID:  &externalID,
+		Name:        provider.Name,
+		Description: "",
+	}
+
+	return s.companyRepo.Create(company)
+}
+
+// syncLocation syncs a location (launch base) from the external API to the database
+func (s *RocketLaunchService) syncLocation(location *models.RocketLaunchPadLocation) error {
+	if location == nil || location.ID == 0 {
+		return nil
+	}
+
+	externalID := int64(location.ID)
+
+	// Check if launch base already exists with this external_id
+	existingBase, err := s.launchBaseRepo.GetByExternalID(externalID)
+	if err == nil && existingBase != nil {
+		// Launch base exists, update if needed
+		existingBase.Name = location.Name
+		existingBase.Country = location.Country
+		existingBase.Location = fmt.Sprintf("%s, %s", location.State, location.StateName)
+		return s.launchBaseRepo.Update(existingBase.ID, existingBase)
+	}
+
+	// Create new launch base
+	launchBase := &models.LaunchBase{
+		ExternalID: &externalID,
+		Name:       location.Name,
+		Location:   fmt.Sprintf("%s, %s", location.State, location.StateName),
+		Country:    location.Country,
+	}
+
+	return s.launchBaseRepo.Create(launchBase)
 }
