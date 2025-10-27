@@ -298,7 +298,7 @@ func (r *RocketLaunchRepository) Delete(id int64) error {
 	return nil
 }
 
-// SyncMissions syncs missions for a rocket launch
+// SyncMissions syncs missions for a rocket launch using a batch insert for better performance
 func (r *RocketLaunchRepository) SyncMissions(launchID int64, missions []models.RocketLaunchMission) error {
 	// Delete existing missions for this launch
 	deleteQuery := `DELETE FROM rocket_launch_missions WHERE rocket_launch_id = $1`
@@ -306,16 +306,28 @@ func (r *RocketLaunchRepository) SyncMissions(launchID int64, missions []models.
 		return fmt.Errorf("failed to delete existing missions: %w", err)
 	}
 
-	// Insert new missions
-	for _, mission := range missions {
-		insertQuery := `
-			INSERT INTO rocket_launch_missions (rocket_launch_id, external_id, name, description)
-			VALUES ($1, $2, $3, $4)
-		`
-		_, err := r.db.Exec(insertQuery, launchID, mission.ExternalID, mission.Name, mission.Description)
-		if err != nil {
-			return fmt.Errorf("failed to insert mission: %w", err)
+	// Skip if no missions to insert
+	if len(missions) == 0 {
+		return nil
+	}
+
+	// Build batch insert query
+	query := `INSERT INTO rocket_launch_missions (rocket_launch_id, external_id, name, description) VALUES `
+	args := make([]interface{}, 0, len(missions)*4)
+
+	for i, mission := range missions {
+		if i > 0 {
+			query += ", "
 		}
+		// Calculate parameter positions for this mission
+		paramOffset := i * 4
+		query += fmt.Sprintf("($%d, $%d, $%d, $%d)", paramOffset+1, paramOffset+2, paramOffset+3, paramOffset+4)
+		args = append(args, launchID, mission.ExternalID, mission.Name, mission.Description)
+	}
+
+	_, err := r.db.Exec(query, args...)
+	if err != nil {
+		return fmt.Errorf("failed to insert missions: %w", err)
 	}
 
 	return nil

@@ -194,7 +194,8 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context, limit int
 		// Sync provider (company) if available
 		if extLaunch.Provider != nil && extLaunch.Provider.ID > 0 {
 			if err := s.syncCompany(extLaunch.Provider); err != nil {
-				// Log error but continue processing
+				// Non-critical error: log and continue processing other launches
+				// TODO: Use structured logging (e.g., logrus) when available in service layer
 				fmt.Printf("Failed to sync company %d: %v\n", extLaunch.Provider.ID, err)
 			}
 		}
@@ -202,7 +203,8 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context, limit int
 		// Sync pad location if available
 		if extLaunch.Pad != nil && extLaunch.Pad.Location != nil && extLaunch.Pad.Location.ID > 0 {
 			if err := s.syncLocation(extLaunch.Pad.Location); err != nil {
-				// Log error but continue processing
+				// Non-critical error: log and continue processing other launches
+				// TODO: Use structured logging (e.g., logrus) when available in service layer
 				fmt.Printf("Failed to sync location %d: %v\n", extLaunch.Pad.Location.ID, err)
 			}
 		}
@@ -254,6 +256,8 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context, limit int
 				})
 			}
 			if err := s.repo.SyncMissions(launchID, missions); err != nil {
+				// Non-critical error: log and continue
+				// TODO: Use structured logging (e.g., logrus) when available in service layer
 				fmt.Printf("Failed to sync missions for launch %d: %v\n", launchID, err)
 			}
 		}
