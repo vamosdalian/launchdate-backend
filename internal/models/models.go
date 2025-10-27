@@ -62,6 +62,7 @@ type LaunchBase struct {
 // RocketLaunch represents a rocket launch event
 type RocketLaunch struct {
 	ID                 int64                 `json:"id" db:"id"`
+	ExternalID         *int64                `json:"external_id,omitempty" db:"external_id"`
 	CosparID           string                `json:"cospar_id" db:"cospar_id"`
 	SortDate           string                `json:"sort_date" db:"sort_date"`
 	Name               string                `json:"name" db:"name"`

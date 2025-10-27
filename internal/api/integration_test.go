@@ -45,7 +45,7 @@ type testContainer struct {
 // setupTestContainer initializes PostgreSQL and Redis containers for integration testing
 func setupTestContainer(t *testing.T) *testContainer {
 	ctx := context.Background()
-	
+
 	// Set Gin to test mode
 	gin.SetMode(gin.TestMode)
 
@@ -79,13 +79,13 @@ func setupTestContainer(t *testing.T) *testContainer {
 	projectRoot, err := filepath.Abs("../..")
 	require.NoError(t, err, "Failed to get project root")
 	migrationsPath := filepath.Join(projectRoot, "migrations")
-	
+
 	m, err := migrate.New(
 		fmt.Sprintf("file://%s", migrationsPath),
 		connStr,
 	)
 	require.NoError(t, err, "Failed to create migration instance")
-	
+
 	err = m.Up()
 	require.NoError(t, err, "Failed to run migrations")
 	m.Close()
@@ -171,22 +171,22 @@ func (tc *testContainer) cleanup(t *testing.T) {
 func makeRequest(t *testing.T, router *gin.Engine, method, path string, body interface{}) *httptest.ResponseRecorder {
 	var reqBody []byte
 	var err error
-	
+
 	if body != nil {
 		reqBody, err = json.Marshal(body)
 		require.NoError(t, err)
 	}
-	
+
 	req, err := http.NewRequest(method, path, bytes.NewBuffer(reqBody))
 	require.NoError(t, err)
-	
+
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
-	
+
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
-	
+
 	return w
 }
 
@@ -597,9 +597,9 @@ func TestLaunchBasesAPI(t *testing.T) {
 	t.Run("DeleteLaunchBase", func(t *testing.T) {
 		// First create a launch base
 		launchBase := models.CreateLaunchBaseRequest{
-			Name:        "Test Launch Site",
-			Location:    "Test Location",
-			Country:     "Test",
+			Name:     "Test Launch Site",
+			Location: "Test Location",
+			Country:  "Test",
 		}
 
 		wCreate := makeRequest(t, tc.router, http.MethodPost, "/api/v1/launch-bases", launchBase)
@@ -795,7 +795,7 @@ func TestRocketLaunchesAPI(t *testing.T) {
 	t.Run("SyncRocketLaunches", func(t *testing.T) {
 		// Call the sync endpoint
 		w := makeRequest(t, tc.router, http.MethodPost, "/api/v1/rocket-launches/sync", nil)
-		
+
 		// The sync endpoint should return either success or error
 		// Since it calls an external API, we check for valid response codes
 		assert.Contains(t, []int{http.StatusOK, http.StatusInternalServerError}, w.Code)
@@ -810,7 +810,7 @@ func TestRocketLaunchesAPI(t *testing.T) {
 			assert.Contains(t, response, "message")
 			assert.Contains(t, response, "count")
 			assert.Equal(t, "rocket launches synced successfully", response["message"])
-			
+
 			// Count should be a number (can be 0 or more)
 			count, ok := response["count"].(float64)
 			assert.True(t, ok, "count should be a number")

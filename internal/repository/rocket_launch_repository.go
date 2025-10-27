@@ -20,17 +20,18 @@ func NewRocketLaunchRepository(db *sqlx.DB) *RocketLaunchRepository {
 func (r *RocketLaunchRepository) Create(rocketLaunch *models.RocketLaunch) error {
 	query := `
 		INSERT INTO rocket_launches (
-			cospar_id, sort_date, name, launch_date, provider_id, rocket_id, launch_base_id,
+			external_id, cospar_id, sort_date, name, launch_date, provider_id, rocket_id, launch_base_id,
 			mission_description, launch_description, window_open, t0, window_close,
 			date_str, slug, weather_summary, weather_temp, weather_condition,
 			weather_wind_mph, weather_icon, weather_updated, quicktext, suborbital,
 			modified, status
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
 		RETURNING id, created_at, updated_at
 	`
 	return r.db.QueryRow(
 		query,
+		rocketLaunch.ExternalID,
 		rocketLaunch.CosparID,
 		rocketLaunch.SortDate,
 		rocketLaunch.Name,
@@ -89,6 +90,29 @@ func (r *RocketLaunchRepository) GetBySlug(slug string) (*models.RocketLaunch, e
 		WHERE rl.slug = $1 AND rl.deleted_at IS NULL
 	`
 	err := r.db.Get(&rocketLaunch, query, slug)
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("rocket launch not found")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	// Load related entities
+	if err := r.loadRelatedEntities(&rocketLaunch); err != nil {
+		return nil, err
+	}
+
+	return &rocketLaunch, nil
+}
+
+func (r *RocketLaunchRepository) GetByExternalID(externalID int64) (*models.RocketLaunch, error) {
+	var rocketLaunch models.RocketLaunch
+	query := `
+		SELECT rl.*
+		FROM rocket_launches rl
+		WHERE rl.external_id = $1 AND rl.deleted_at IS NULL
+	`
+	err := r.db.Get(&rocketLaunch, query, externalID)
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("rocket launch not found")
 	}
@@ -204,16 +228,17 @@ func (r *RocketLaunchRepository) loadRelatedEntities(rl *models.RocketLaunch) er
 func (r *RocketLaunchRepository) Update(id int64, rocketLaunch *models.RocketLaunch) error {
 	query := `
 		UPDATE rocket_launches
-		SET cospar_id = $1, sort_date = $2, name = $3, launch_date = $4, provider_id = $5, rocket_id = $6, 
-		    launch_base_id = $7, mission_description = $8, launch_description = $9,
-		    window_open = $10, t0 = $11, window_close = $12, date_str = $13, slug = $14,
-		    weather_summary = $15, weather_temp = $16, weather_condition = $17,
-		    weather_wind_mph = $18, weather_icon = $19, weather_updated = $20,
-		    quicktext = $21, suborbital = $22, modified = $23, status = $24
-		WHERE id = $25 AND deleted_at IS NULL
+		SET external_id = $1, cospar_id = $2, sort_date = $3, name = $4, launch_date = $5, provider_id = $6, rocket_id = $7, 
+		    launch_base_id = $8, mission_description = $9, launch_description = $10,
+		    window_open = $11, t0 = $12, window_close = $13, date_str = $14, slug = $15,
+		    weather_summary = $16, weather_temp = $17, weather_condition = $18,
+		    weather_wind_mph = $19, weather_icon = $20, weather_updated = $21,
+		    quicktext = $22, suborbital = $23, modified = $24, status = $25
+		WHERE id = $26 AND deleted_at IS NULL
 	`
 	result, err := r.db.Exec(
 		query,
+		rocketLaunch.ExternalID,
 		rocketLaunch.CosparID,
 		rocketLaunch.SortDate,
 		rocketLaunch.Name,

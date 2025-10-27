@@ -16,6 +16,7 @@ func TestConvertExternalLaunch(t *testing.T) {
 	wind := float32(10.0)
 
 	external := &models.ExternalRocketLaunch{
+		ID:                 12345,
 		CosparID:           "2025-001A",
 		SortDate:           "20251024",
 		Name:               "Test Launch",
@@ -38,6 +39,13 @@ func TestConvertExternalLaunch(t *testing.T) {
 	}
 
 	result := service.convertExternalLaunch(external)
+
+	// Verify ExternalID is set correctly
+	if result.ExternalID == nil {
+		t.Error("Expected ExternalID to be set, got nil")
+	} else if *result.ExternalID != external.ID {
+		t.Errorf("Expected ExternalID %d, got %d", external.ID, *result.ExternalID)
+	}
 
 	// Verify all fields are copied correctly
 	if result.CosparID != external.CosparID {
