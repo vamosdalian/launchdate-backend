@@ -68,4 +68,3 @@ func TestExternalIDFieldPresenceInModel(t *testing.T) {
 	assert.NotNil(t, launch.ExternalID, "ExternalID field should exist in RocketLaunch model")
 	assert.Equal(t, externalID, *launch.ExternalID, "ExternalID value should be preserved")
 }
-

@@ -44,7 +44,7 @@ func main() {
 	defer cacheService.Close()
 
 	// Initialize handlers
-	handler := api.NewHandler(db, cacheService, logger)
+	handler := api.NewHandler(db, cacheService, logger, cfg)
 
 	// Setup router
 	router := api.SetupRouter(handler)

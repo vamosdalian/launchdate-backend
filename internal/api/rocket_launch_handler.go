@@ -139,7 +139,19 @@ func (h *Handler) DeleteRocketLaunch(c *gin.Context) {
 }
 
 func (h *Handler) SyncRocketLaunches(c *gin.Context) {
-	count, err := h.rocketLaunchService.SyncLaunchesFromAPI(c.Request.Context())
+	// Get limit parameter, default to 10
+	limit := 10
+	if limitStr := c.Query("limit"); limitStr != "" {
+		if parsedLimit, err := strconv.Atoi(limitStr); err == nil && parsedLimit > 0 {
+			limit = parsedLimit
+			// Cap at 100 to prevent excessive API calls
+			if limit > 100 {
+				limit = 100
+			}
+		}
+	}
+
+	count, err := h.rocketLaunchService.SyncLaunchesFromAPI(c.Request.Context(), limit)
 	if err != nil {
 		h.logger.Printf("failed to sync rocket launches: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to sync rocket launches"})
@@ -149,5 +161,6 @@ func (h *Handler) SyncRocketLaunches(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "rocket launches synced successfully",
 		"count":   count,
+		"limit":   limit,
 	})
 }

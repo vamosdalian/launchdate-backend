@@ -130,8 +130,16 @@ func setupTestContainer(t *testing.T) *testContainer {
 	logger.SetOutput(os.Stdout)
 	logger.SetLevel(logrus.ErrorLevel) // Reduce noise in tests
 
+	// Create test config
+	cfg := &config.Config{
+		RocketLaunchAPI: config.RocketLaunchAPIConfig{
+			APIKey:  "",
+			BaseURL: "https://www.rocketlaunch.live/api",
+		},
+	}
+
 	// Create handler and router
-	handler := NewHandler(db, cache, logger)
+	handler := NewHandler(db, cache, logger, cfg)
 	router := SetupRouter(handler)
 
 	return &testContainer{

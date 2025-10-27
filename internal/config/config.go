@@ -8,10 +8,11 @@ import (
 
 // Config holds all configuration for the application
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
-	Redis    RedisConfig
-	S3       S3Config
+	Server          ServerConfig
+	Database        DatabaseConfig
+	Redis           RedisConfig
+	S3              S3Config
+	RocketLaunchAPI RocketLaunchAPIConfig
 }
 
 // ServerConfig holds server configuration
@@ -48,6 +49,12 @@ type S3Config struct {
 	UseSSL          bool
 }
 
+// RocketLaunchAPIConfig holds RocketLaunch.Live API configuration
+type RocketLaunchAPIConfig struct {
+	APIKey  string
+	BaseURL string
+}
+
 // Load loads configuration from environment variables
 func Load() (*Config, error) {
 	config := &Config{
@@ -76,6 +83,10 @@ func Load() (*Config, error) {
 			SecretAccessKey: getEnv("S3_SECRET_ACCESS_KEY", ""),
 			BucketName:      getEnv("S3_BUCKET_NAME", "launchdate"),
 			UseSSL:          getEnvAsBool("S3_USE_SSL", true),
+		},
+		RocketLaunchAPI: RocketLaunchAPIConfig{
+			APIKey:  getEnv("ROCKET_LAUNCH_API_KEY", ""),
+			BaseURL: getEnv("ROCKET_LAUNCH_API_BASE_URL", "https://www.rocketlaunch.live/api"),
 		},
 	}
 

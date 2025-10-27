@@ -14,6 +14,7 @@ type HealthResponse struct {
 // Company represents a space company
 type Company struct {
 	ID           int64      `json:"id" db:"id"`
+	ExternalID   *int64     `json:"external_id,omitempty" db:"external_id"`
 	Name         string     `json:"name" db:"name"`
 	Description  string     `json:"description" db:"description"`
 	Founded      int        `json:"founded" db:"founded"`
@@ -30,6 +31,7 @@ type Company struct {
 // Rocket represents a rocket
 type Rocket struct {
 	ID          int64      `json:"id" db:"id"`
+	ExternalID  *int64     `json:"external_id,omitempty" db:"external_id"`
 	Name        string     `json:"name" db:"name"`
 	Description string     `json:"description" db:"description"`
 	Height      float64    `json:"height" db:"height"`
@@ -47,6 +49,7 @@ type Rocket struct {
 // LaunchBase represents a launch site
 type LaunchBase struct {
 	ID          int64      `json:"id" db:"id"`
+	ExternalID  *int64     `json:"external_id,omitempty" db:"external_id"`
 	Name        string     `json:"name" db:"name"`
 	Location    string     `json:"location" db:"location"`
 	Country     string     `json:"country" db:"country"`
@@ -133,6 +136,7 @@ type RocketLaunchPadLocation struct {
 // RocketLaunchMission represents a mission
 type RocketLaunchMission struct {
 	ID          int64  `json:"id" db:"id"`
+	ExternalID  *int64 `json:"external_id,omitempty" db:"external_id"`
 	Name        string `json:"name" db:"name"`
 	Description string `json:"description" db:"description"`
 }

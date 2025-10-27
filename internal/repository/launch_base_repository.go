@@ -19,12 +19,13 @@ func NewLaunchBaseRepository(db *sqlx.DB) *LaunchBaseRepository {
 
 func (r *LaunchBaseRepository) Create(launchBase *models.LaunchBase) error {
 	query := `
-		INSERT INTO launch_bases (name, location, country, description, image_url, latitude, longitude)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		INSERT INTO launch_bases (external_id, name, location, country, description, image_url, latitude, longitude)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, created_at, updated_at
 	`
 	return r.db.QueryRow(
 		query,
+		launchBase.ExternalID,
 		launchBase.Name,
 		launchBase.Location,
 		launchBase.Country,
@@ -39,6 +40,16 @@ func (r *LaunchBaseRepository) GetByID(id int64) (*models.LaunchBase, error) {
 	var launchBase models.LaunchBase
 	query := `SELECT * FROM launch_bases WHERE id = $1 AND deleted_at IS NULL`
 	err := r.db.Get(&launchBase, query, id)
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("launch base not found")
+	}
+	return &launchBase, err
+}
+
+func (r *LaunchBaseRepository) GetByExternalID(externalID int64) (*models.LaunchBase, error) {
+	var launchBase models.LaunchBase
+	query := `SELECT * FROM launch_bases WHERE external_id = $1 AND deleted_at IS NULL`
+	err := r.db.Get(&launchBase, query, externalID)
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("launch base not found")
 	}
@@ -60,12 +71,13 @@ func (r *LaunchBaseRepository) List(limit, offset int) ([]models.LaunchBase, err
 func (r *LaunchBaseRepository) Update(id int64, launchBase *models.LaunchBase) error {
 	query := `
 		UPDATE launch_bases
-		SET name = $1, location = $2, country = $3, description = $4,
-		    image_url = $5, latitude = $6, longitude = $7
-		WHERE id = $8 AND deleted_at IS NULL
+		SET external_id = $1, name = $2, location = $3, country = $4, description = $5,
+		    image_url = $6, latitude = $7, longitude = $8
+		WHERE id = $9 AND deleted_at IS NULL
 	`
 	result, err := r.db.Exec(
 		query,
+		launchBase.ExternalID,
 		launchBase.Name,
 		launchBase.Location,
 		launchBase.Country,
