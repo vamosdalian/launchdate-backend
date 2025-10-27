@@ -185,7 +185,24 @@ golangci-lint run
 
 ## Deployment
 
-The application is automatically built and deployed to GitHub Container Registry (GHCR) on push to main/develop branches.
+The application is automatically built and deployed to GitHub Container Registry (GHCR):
+- **Development builds**: Triggered on push to main/develop branches
+- **Release builds**: Triggered when creating version tags (e.g., `v1.0.0`)
+
+### Creating a Release
+
+To create a new release:
+
+```bash
+# Create and push a version tag
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This will automatically:
+1. Build the Docker image
+2. Tag it with multiple versions: `v1.0.0`, `1.0`, `1`, and `latest`
+3. Push to GHCR with multi-platform support (amd64, arm64)
 
 ### Pull the Docker Image
 
