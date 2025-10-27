@@ -8,10 +8,10 @@ import (
 
 // Config holds all configuration for the application
 type Config struct {
-	Server         ServerConfig
-	Database       DatabaseConfig
-	Redis          RedisConfig
-	S3             S3Config
+	Server          ServerConfig
+	Database        DatabaseConfig
+	Redis           RedisConfig
+	S3              S3Config
 	RocketLaunchAPI RocketLaunchAPIConfig
 }
 

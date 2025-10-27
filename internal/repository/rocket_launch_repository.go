@@ -207,7 +207,7 @@ func (r *RocketLaunchRepository) loadRelatedEntities(rl *models.RocketLaunch) er
 	}
 
 	// Load missions
-	missionsQuery := `SELECT id, name, description FROM rocket_launch_missions WHERE rocket_launch_id = $1`
+	missionsQuery := `SELECT id, external_id, name, description FROM rocket_launch_missions WHERE rocket_launch_id = $1`
 	missions := []models.RocketLaunchMission{}
 	if err := r.db.Select(&missions, missionsQuery, rl.ID); err != nil && err != sql.ErrNoRows {
 		return err
@@ -293,6 +293,29 @@ func (r *RocketLaunchRepository) Delete(id int64) error {
 	}
 	if rows == 0 {
 		return fmt.Errorf("rocket launch not found")
+	}
+
+	return nil
+}
+
+// SyncMissions syncs missions for a rocket launch
+func (r *RocketLaunchRepository) SyncMissions(launchID int64, missions []models.RocketLaunchMission) error {
+	// Delete existing missions for this launch
+	deleteQuery := `DELETE FROM rocket_launch_missions WHERE rocket_launch_id = $1`
+	if _, err := r.db.Exec(deleteQuery, launchID); err != nil {
+		return fmt.Errorf("failed to delete existing missions: %w", err)
+	}
+
+	// Insert new missions
+	for _, mission := range missions {
+		insertQuery := `
+			INSERT INTO rocket_launch_missions (rocket_launch_id, external_id, name, description)
+			VALUES ($1, $2, $3, $4)
+		`
+		_, err := r.db.Exec(insertQuery, launchID, mission.ExternalID, mission.Name, mission.Description)
+		if err != nil {
+			return fmt.Errorf("failed to insert mission: %w", err)
+		}
 	}
 
 	return nil

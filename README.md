@@ -132,6 +132,7 @@ You can view the documentation using tools like:
 - `GET /api/v1/rocket-launches/{id}` - Get rocket launch details
 - `PUT /api/v1/rocket-launches/{id}` - Update a rocket launch
 - `DELETE /api/v1/rocket-launches/{id}` - Delete a rocket launch
+- `POST /api/v1/rocket-launches/sync?limit=10` - Sync launches from RocketLaunch.Live API (requires API key)
 
 **News**
 - `GET /api/v1/news` - List news articles
@@ -226,6 +227,32 @@ docker run -d \
 ## Environment Variables
 
 See [.env.example](.env.example) for all available configuration options.
+
+### RocketLaunch.Live API Integration
+
+To enable syncing rocket launch data from the RocketLaunch.Live API:
+
+1. Set the `ROCKET_LAUNCH_API_KEY` environment variable with your API key
+2. Optionally configure `ROCKET_LAUNCH_API_BASE_URL` (defaults to `https://www.rocketlaunch.live/api`)
+
+Example:
+```bash
+ROCKET_LAUNCH_API_KEY=your-api-key-here
+ROCKET_LAUNCH_API_BASE_URL=https://www.rocketlaunch.live/api
+```
+
+To sync launches:
+```bash
+curl -X POST "http://localhost:8080/api/v1/rocket-launches/sync?limit=10"
+```
+
+This will:
+- Fetch up to 10 upcoming launches from the API
+- Automatically sync related companies, locations (pads), and missions
+- Update existing launches if they already exist (based on external_id)
+- Create new launches if they don't exist
+
+The sync endpoint uses external IDs to prevent duplicates and ensure data consistency.
 
 ## Contributing
 

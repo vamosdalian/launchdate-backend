@@ -211,26 +211,52 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context, limit int
 		rocketLaunch := s.convertExternalLaunch(&extLaunch)
 
 		// Check if launch with this external_id already exists
+		var launchID int64
 		if rocketLaunch.ExternalID != nil {
 			existingLaunch, findErr := s.repo.GetByExternalID(*rocketLaunch.ExternalID)
 			if findErr == nil && existingLaunch != nil {
 				// Update existing launch
 				if updateErr := s.repo.Update(existingLaunch.ID, rocketLaunch); updateErr == nil {
+					launchID = existingLaunch.ID
 					savedCount++
+				} else {
+					continue
 				}
+			} else {
+				// Try to create the launch
+				err := s.repo.Create(rocketLaunch)
+				if err != nil {
+					// If creation fails due to duplicate external_id, skip it
+					continue
+				}
+				launchID = rocketLaunch.ID
+				savedCount++
+			}
+		} else {
+			// No external ID, try to create
+			err := s.repo.Create(rocketLaunch)
+			if err != nil {
 				continue
 			}
+			launchID = rocketLaunch.ID
+			savedCount++
 		}
 
-		// Try to create the launch
-		err := s.repo.Create(rocketLaunch)
-		if err != nil {
-			// If creation fails due to duplicate external_id, skip it
-			// This handles race conditions or other edge cases
-			continue
+		// Sync missions for this launch
+		if len(extLaunch.Missions) > 0 {
+			missions := make([]models.RocketLaunchMission, 0, len(extLaunch.Missions))
+			for _, m := range extLaunch.Missions {
+				externalMissionID := int64(m.ID)
+				missions = append(missions, models.RocketLaunchMission{
+					ExternalID:  &externalMissionID,
+					Name:        m.Name,
+					Description: m.Description,
+				})
+			}
+			if err := s.repo.SyncMissions(launchID, missions); err != nil {
+				fmt.Printf("Failed to sync missions for launch %d: %v\n", launchID, err)
+			}
 		}
-
-		savedCount++
 	}
 
 	// Invalidate list cache
