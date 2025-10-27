@@ -90,6 +90,7 @@ func (h *Handler) UpdateRocketLaunch(c *gin.Context) {
 		CosparID:           req.CosparID,
 		SortDate:           req.SortDate,
 		Name:               req.Name,
+		LaunchDate:         req.LaunchDate,
 		ProviderID:         req.ProviderID,
 		RocketID:           req.RocketID,
 		LaunchBaseID:       req.LaunchBaseID,

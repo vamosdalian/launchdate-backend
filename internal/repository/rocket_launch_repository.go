@@ -20,13 +20,13 @@ func NewRocketLaunchRepository(db *sqlx.DB) *RocketLaunchRepository {
 func (r *RocketLaunchRepository) Create(rocketLaunch *models.RocketLaunch) error {
 	query := `
 		INSERT INTO rocket_launches (
-			cospar_id, sort_date, name, provider_id, rocket_id, launch_base_id,
+			cospar_id, sort_date, name, launch_date, provider_id, rocket_id, launch_base_id,
 			mission_description, launch_description, window_open, t0, window_close,
 			date_str, slug, weather_summary, weather_temp, weather_condition,
 			weather_wind_mph, weather_icon, weather_updated, quicktext, suborbital,
 			modified, status
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
 		RETURNING id, created_at, updated_at
 	`
 	return r.db.QueryRow(
@@ -34,6 +34,7 @@ func (r *RocketLaunchRepository) Create(rocketLaunch *models.RocketLaunch) error
 		rocketLaunch.CosparID,
 		rocketLaunch.SortDate,
 		rocketLaunch.Name,
+		rocketLaunch.LaunchDate,
 		rocketLaunch.ProviderID,
 		rocketLaunch.RocketID,
 		rocketLaunch.LaunchBaseID,
@@ -203,19 +204,20 @@ func (r *RocketLaunchRepository) loadRelatedEntities(rl *models.RocketLaunch) er
 func (r *RocketLaunchRepository) Update(id int64, rocketLaunch *models.RocketLaunch) error {
 	query := `
 		UPDATE rocket_launches
-		SET cospar_id = $1, sort_date = $2, name = $3, provider_id = $4, rocket_id = $5, 
-		    launch_base_id = $6, mission_description = $7, launch_description = $8,
-		    window_open = $9, t0 = $10, window_close = $11, date_str = $12, slug = $13,
-		    weather_summary = $14, weather_temp = $15, weather_condition = $16,
-		    weather_wind_mph = $17, weather_icon = $18, weather_updated = $19,
-		    quicktext = $20, suborbital = $21, modified = $22, status = $23
-		WHERE id = $24 AND deleted_at IS NULL
+		SET cospar_id = $1, sort_date = $2, name = $3, launch_date = $4, provider_id = $5, rocket_id = $6, 
+		    launch_base_id = $7, mission_description = $8, launch_description = $9,
+		    window_open = $10, t0 = $11, window_close = $12, date_str = $13, slug = $14,
+		    weather_summary = $15, weather_temp = $16, weather_condition = $17,
+		    weather_wind_mph = $18, weather_icon = $19, weather_updated = $20,
+		    quicktext = $21, suborbital = $22, modified = $23, status = $24
+		WHERE id = $25 AND deleted_at IS NULL
 	`
 	result, err := r.db.Exec(
 		query,
 		rocketLaunch.CosparID,
 		rocketLaunch.SortDate,
 		rocketLaunch.Name,
+		rocketLaunch.LaunchDate,
 		rocketLaunch.ProviderID,
 		rocketLaunch.RocketID,
 		rocketLaunch.LaunchBaseID,

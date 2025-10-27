@@ -33,6 +33,7 @@ func (s *RocketLaunchService) CreateRocketLaunch(ctx context.Context, req *model
 		CosparID:           req.CosparID,
 		SortDate:           req.SortDate,
 		Name:               req.Name,
+		LaunchDate:         req.LaunchDate,
 		ProviderID:         req.ProviderID,
 		RocketID:           req.RocketID,
 		LaunchBaseID:       req.LaunchBaseID,
@@ -188,10 +189,20 @@ func (s *RocketLaunchService) SyncLaunchesFromAPI(ctx context.Context) (int, err
 
 // convertExternalLaunch converts an external API launch to our internal model
 func (s *RocketLaunchService) convertExternalLaunch(ext *models.ExternalRocketLaunch) *models.RocketLaunch {
+	// Use T0 as launch_date if available, otherwise use current time as placeholder
+	launchDate := time.Now()
+	if ext.T0 != nil {
+		t0 := convertFlexibleTime(ext.T0)
+		if t0 != nil {
+			launchDate = *t0
+		}
+	}
+
 	launch := &models.RocketLaunch{
 		CosparID:           ext.CosparID,
 		SortDate:           ext.SortDate,
 		Name:               ext.Name,
+		LaunchDate:         launchDate,
 		MissionDescription: ext.MissionDescription,
 		LaunchDescription:  ext.LaunchDescription,
 		WindowOpen:         convertFlexibleTime(ext.WindowOpen),

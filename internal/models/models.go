@@ -65,6 +65,7 @@ type RocketLaunch struct {
 	CosparID           string                `json:"cospar_id" db:"cospar_id"`
 	SortDate           string                `json:"sort_date" db:"sort_date"`
 	Name               string                `json:"name" db:"name"`
+	LaunchDate         time.Time             `json:"launch_date" db:"launch_date"`
 	Provider           *RocketLaunchProvider `json:"provider,omitempty" db:"-"`
 	ProviderID         *int64                `json:"provider_id,omitempty" db:"provider_id"`
 	Vehicle            *RocketLaunchVehicle  `json:"vehicle,omitempty" db:"-"`
@@ -194,6 +195,7 @@ type CreateRocketLaunchRequest struct {
 	CosparID           string     `json:"cospar_id"`
 	SortDate           string     `json:"sort_date"`
 	Name               string     `json:"name" binding:"required"`
+	LaunchDate         time.Time  `json:"launch_date" binding:"required"`
 	ProviderID         *int64     `json:"provider_id"`
 	RocketID           *int64     `json:"rocket_id"`
 	LaunchBaseID       *int64     `json:"launch_base_id"`
