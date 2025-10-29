@@ -15,7 +15,7 @@ type Handler struct {
 
 // NewHandler creates a new handler
 func NewHandler(logger *logrus.Logger, cfg *config.Config, db *db.MongoDB) *Handler {
-	ll2server := service.NewLL2Service(db)
+	ll2server := service.NewLL2Service(cfg, db)
 	return &Handler{
 		logger:    logger,
 		ll2Server: ll2server,
