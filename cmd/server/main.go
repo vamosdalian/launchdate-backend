@@ -12,41 +12,28 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/vamosdalian/launchdate-backend/internal/api"
 	"github.com/vamosdalian/launchdate-backend/internal/config"
-	"github.com/vamosdalian/launchdate-backend/internal/database"
-	"github.com/vamosdalian/launchdate-backend/internal/service"
+	"github.com/vamosdalian/launchdate-backend/internal/db"
 )
 
 func main() {
-	// Initialize logger
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 	logger.SetOutput(os.Stdout)
 	logger.SetLevel(logrus.InfoLevel)
 
-	// Load configuration
 	cfg, err := config.Load()
 	if err != nil {
 		logger.Fatalf("failed to load config: %v", err)
 	}
 
-	// Initialize database
-	db, err := database.New(&cfg.Database)
+	db, cleandb, err := db.NewMongoDB(cfg.MongodbURL, cfg.MongodbDatabase)
 	if err != nil {
-		logger.Fatalf("failed to connect to database: %v", err)
+		logger.Fatalf("failed to connect to mongodb: %v", err)
 	}
-	defer db.Close()
+	defer cleandb()
+	logger.Infof("create mongodb database: %s", cfg.MongodbDatabase)
 
-	// Initialize cache service
-	cacheService, err := service.NewCacheService(&cfg.Redis)
-	if err != nil {
-		logger.Fatalf("failed to connect to redis: %v", err)
-	}
-	defer cacheService.Close()
-
-	// Initialize handlers
-	handler := api.NewHandler(db, cacheService, logger, cfg)
-
-	// Setup router
+	handler := api.NewHandler(logger, cfg, db)
 	router := api.SetupRouter(handler)
 
 	// Create HTTP server

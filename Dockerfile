@@ -32,9 +32,6 @@ WORKDIR /app
 # Copy the binary from builder
 COPY --from=builder /app/server .
 
-# Copy migrations
-COPY --from=builder /app/migrations ./migrations
-
 # Change ownership to non-root user
 RUN chown -R nonroot:nonroot /app
 

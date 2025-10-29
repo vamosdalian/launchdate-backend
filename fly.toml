@@ -1,0 +1,8 @@
+app = "launchdate-backend"
+primary_region = "sin"
+
+[env]
+SERVER_PORT = "8080"
+SERVER_HOST = ""
+SERVER_ENVIRONMENT = "production"
+MONGODB_DATABASE = "launchdate_db"
