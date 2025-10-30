@@ -25,3 +25,23 @@ func (h *Handler) StartLL2LaunchUpdate(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"status": "LL2 launch update started"})
 }
+
+func (h *Handler) StartLL2AngecyUpdate(c *gin.Context) {
+	err := h.ll2Server.UpdateAngecy(true)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{"status": "LL2 angecy update started"})
+}
+
+func (h *Handler) GetLL2Angecy(c *gin.Context) {
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	angecies, err := h.ll2Server.GetAngecyFromDB(limit, offset)
+	if err != nil {
+		h.Error(c, "failed to get angecies: "+err.Error())
+		return
+	}
+	h.Json(c, angecies)
+}

@@ -136,3 +136,114 @@ func (s *LL2Service) GetLaunchesFromDB(limit, offset int) ([]models.LL2LaunchNor
 
 	return launches, nil
 }
+
+func (s *LL2Service) LoadAngecyFromAPI(limit, offset int) (*models.LL2AngecyResponse, error) {
+	var launches *models.LL2AngecyResponse
+	err := s.LoadDataFromAPI("angecies", limit, offset, &launches)
+	return launches, err
+}
+
+func (s *LL2Service) LoadDataFromAPI(endpoint string, limit, offset int, payload any) error {
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	url := fmt.Sprintf("%s/2.3.0/%s?limit=%d&offset=%d&mode=detailed", s.LL2URLPrefix, endpoint, limit, offset)
+	resp, err := client.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(body, &payload)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *LL2Service) GetAngecyFromDB(limit, offset int) ([]models.LL2AgencyDetailed, error) {
+	collection := s.mongoClient.Collection("ll2_agency")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	findOptions := options.Find()
+	findOptions.SetLimit(int64(limit))
+	findOptions.SetSkip(int64(offset))
+	findOptions.SetSort(map[string]int{"id": 1}) // Sort by id ascending
+
+	cursor, err := collection.Find(ctx, map[string]any{}, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var agencies []models.LL2AgencyDetailed
+	for cursor.Next(ctx) {
+		var agency models.LL2AgencyDetailed
+		if err := cursor.Decode(&agency); err != nil {
+			return nil, err
+		}
+		agencies = append(agencies, agency)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return agencies, nil
+}
+
+func (s *LL2Service) UpdateAngecy(async bool) error {
+	if async {
+		go func() {
+			err := s.updateAngecyAsync()
+			if err != nil {
+				logrus.Errorf("%s", err)
+			}
+		}()
+		return nil
+	}
+	return s.updateAngecyAsync()
+}
+
+func (s *LL2Service) updateAngecyAsync() error {
+	count := 1
+	offset := 0
+	rl := util.NewRateLimit(time.Duration(s.LL2RequestInterval) * time.Second)
+	logrus.Info("Starting LL2 angecy update...")
+	for {
+		if offset >= count {
+			break
+		}
+
+		rl.Wait()
+		agencies, err := s.LoadAngecyFromAPI(10, offset)
+		if err != nil {
+			return err
+		}
+		count = agencies.Count
+		logrus.Infof("Fetched %d/%d angecies from LL2", offset+len(agencies.Results), count)
+
+		for _, agency := range agencies.Results {
+			filter := map[string]any{
+				"id": agency.ID,
+			}
+			update := map[string]any{
+				"$set": agency,
+			}
+			opts := options.Update().SetUpsert(true)
+			_, err := s.mongoClient.Collection("ll2_agency").UpdateOne(context.Background(), filter, update, opts)
+			if err != nil {
+				return err
+			}
+		}
+		offset += len(agencies.Results)
+	}
+	return nil
+}

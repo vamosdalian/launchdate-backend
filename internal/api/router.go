@@ -20,6 +20,8 @@ func SetupRouter(handler *Handler) *gin.Engine {
 	{
 		ll2.GET("/launches", handler.GetLL2Launches)
 		ll2.POST("/launches/update", handler.StartLL2LaunchUpdate)
+		ll2.GET("/angecies", handler.GetLL2Angecy)
+		ll2.POST("/angecies/update", handler.StartLL2AngecyUpdate)
 	}
 
 	return router

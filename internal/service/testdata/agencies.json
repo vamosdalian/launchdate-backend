@@ -1,0 +1,58 @@
+{
+  "count": 1,
+  "next": "https://lldev.thespacedevs.com/2.3.0/agencies/?limit=1&mode=detailed&offset=1",
+  "previous": null,
+  "results": [
+    {
+      "response_mode": "detailed",
+      "id": 225,
+      "url": "https://lldev.thespacedevs.com/2.3.0/agencies/225/",
+      "name": "1worldspace",
+      "abbrev": "1WSP",
+      "type": {
+        "id": 3,
+        "name": "Commercial"
+      },
+      "featured": false,
+      "country": [
+        {
+          "id": 2,
+          "name": "United States of America",
+          "alpha_2_code": "US",
+          "alpha_3_code": "USA",
+          "nationality_name": "American",
+          "nationality_name_composed": "Americano"
+        }
+      ],
+      "description": "A now nonexistent satellite radio network company that operated two satellites to bring coverage with 62 stations to most of the Eastern Hemisphere. They went bankrupt in 2008. There has been a plan to relaunch the company, but it was announced in 2011, and nothing has been done since.",
+      "administrator": null,
+      "founding_year": 1960,
+      "launchers": "",
+      "spacecraft": "AfriStar | AsiaStar",
+      "parent": null,
+      "image": null,
+      "logo": null,
+      "social_logo": null,
+      "total_launch_count": 0,
+      "consecutive_successful_launches": 0,
+      "successful_launches": 0,
+      "failed_launches": 0,
+      "pending_launches": 0,
+      "consecutive_successful_landings": 0,
+      "successful_landings": 0,
+      "failed_landings": 0,
+      "attempted_landings": 0,
+      "successful_landings_spacecraft": 0,
+      "failed_landings_spacecraft": 0,
+      "attempted_landings_spacecraft": 0,
+      "successful_landings_payload": 0,
+      "failed_landings_payload": 0,
+      "attempted_landings_payload": 0,
+      "info_url": null,
+      "wiki_url": "https://en.wikipedia.org/wiki/1worldspace",
+      "social_media_links": [],
+      "launcher_list": [],
+      "spacecraft_list": []
+    }
+  ]
+}
