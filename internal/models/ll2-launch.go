@@ -10,379 +10,379 @@ type LL2Response struct {
 }
 
 type LL2LaunchBasic struct {
-	ID               string          `json:"id"`
-	URL              string          `json:"url"`
-	Name             string          `json:"name"`
-	ResponseMode     string          `json:"response_mode"`
-	Slug             string          `json:"slug"`
-	LaunchDesignator string          `json:"launch_designator"`
-	Status           LL2Status       `json:"status"`
-	LastUpdated      string          `json:"last_updated"`
-	Net              string          `json:"net"`
-	NetPrecision     LL2NetPrecision `json:"net_precision"`
-	WindowEnd        string          `json:"window_end"`
-	WindowStart      string          `json:"window_start"`
-	Image            LL2Image        `json:"image"`
-	Infographic      string          `json:"infographic"`
+	ID               string          `json:"id" bson:"id"`
+	URL              string          `json:"url" bson:"url"`
+	Name             string          `json:"name" bson:"name"`
+	ResponseMode     string          `json:"response_mode" bson:"response_mode"`
+	Slug             string          `json:"slug" bson:"slug"`
+	LaunchDesignator string          `json:"launch_designator" bson:"launch_designator"`
+	Status           LL2Status       `json:"status" bson:"status"`
+	LastUpdated      string          `json:"last_updated" bson:"last_updated"`
+	Net              string          `json:"net" bson:"net"`
+	NetPrecision     LL2NetPrecision `json:"net_precision" bson:"net_precision"`
+	WindowEnd        string          `json:"window_end" bson:"window_end"`
+	WindowStart      string          `json:"window_start" bson:"window_start"`
+	Image            LL2Image        `json:"image" bson:"image"`
+	Infographic      string          `json:"infographic" bson:"infographic"`
 }
 
 type LL2Image struct {
-	ID           int               `json:"id"`
-	Name         string            `json:"name"`
-	ImageURL     string            `json:"image_url"`
-	ThumbnailURL string            `json:"thumbnail_url"`
-	Credit       string            `json:"credit,omitempty"`
-	License      LL2ImageLicense   `json:"license"`
-	SingleUse    bool              `json:"single_use"`
-	Variants     []LL2ImageVariant `json:"variants"`
+	ID           int               `json:"id" bson:"id"`
+	Name         string            `json:"name" bson:"name"`
+	ImageURL     string            `json:"image_url" bson:"image_url"`
+	ThumbnailURL string            `json:"thumbnail_url" bson:"thumbnail_url"`
+	Credit       string            `json:"credit" bson:"credit"`
+	License      LL2ImageLicense   `json:"license" bson:"license"`
+	SingleUse    bool              `json:"single_use" bson:"single_use"`
+	Variants     []LL2ImageVariant `json:"variants" bson:"variants"`
 }
 
 type LL2ImageLicense struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Priority int    `json:"priority"`
-	Link     string `json:"link"`
+	ID       int    `json:"id" bson:"id"`
+	Name     string `json:"name" bson:"name"`
+	Priority int    `json:"priority" bson:"priority"`
+	Link     string `json:"link" bson:"link"`
 }
 
 type LL2ImageVariant struct {
-	ID     int    `json:"id"`
-	URL    string `json:"url"`
-	Width  int    `json:"width"`
-	Height int    `json:"height"`
+	ID     int    `json:"id" bson:"id"`
+	URL    string `json:"url" bson:"url"`
+	Width  int    `json:"width" bson:"width"`
+	Height int    `json:"height" bson:"height"`
 }
 
 type LL2Status struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Abbrev      string `json:"abbrev"`
-	Description string `json:"description"`
+	ID          int    `json:"id" bson:"id"`
+	Name        string `json:"name" bson:"name"`
+	Abbrev      string `json:"abbrev" bson:"abbrev"`
+	Description string `json:"description" bson:"description"`
 }
 
 type LL2NetPrecision struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Abbrev      string `json:"abbrev"`
-	Description string `json:"description"`
+	ID          int    `json:"id" bson:"id"`
+	Name        string `json:"name" bson:"name"`
+	Abbrev      string `json:"abbrev" bson:"abbrev"`
+	Description string `json:"description" bson:"description"`
 }
 
 type LL2LaunchNormal struct {
 	LL2LaunchBasic                 `bson:",inline"`
-	Probability                    int                `json:"probability"`
-	WeatherConcerns                string             `json:"weather_concerns"`
-	FailReason                     string             `json:"failreason"`
-	HashTag                        string             `json:"hashtag"`
-	LaunchServiceProvider          LL2AgencyMini      `json:"launch_service_provider"`
-	Rocket                         LL2RocketNormal    `json:"rocket"`
-	Mission                        LL2Mission         `json:"mission"`
-	Pad                            LL2Pad             `json:"pad"`
-	WebcastLive                    bool               `json:"webcast_live"`
-	Program                        []LL2ProgramNormal `json:"program"`
-	OrbitalLaunchAttemptCount      int                `json:"orbital_launch_attempt_count"`
-	LocationLaunchAttemptCount     int                `json:"location_launch_attempt_count"`
-	PadLaunchAttemptCount          int                `json:"pad_launch_attempt_count"`
-	AgencyLaunchAttemptCount       int                `json:"agency_launch_attempt_count"`
-	OrbitalLaunchAttemptCountYear  int                `json:"orbital_launch_attempt_count_year"`
-	LocationLaunchAttemptCountYear int                `json:"location_launch_attempt_count_year"`
-	PadLaunchAttemptCountYear      int                `json:"pad_launch_attempt_count_year"`
-	AgencyLaunchAttemptCountYear   int                `json:"agency_launch_attempt_count_year"`
+	Probability                    int                `json:"probability" bson:"probability"`
+	WeatherConcerns                string             `json:"weather_concerns" bson:"weather_concerns"`
+	FailReason                     string             `json:"failreason" bson:"failreason"`
+	HashTag                        string             `json:"hashtag" bson:"hashtag"`
+	LaunchServiceProvider          LL2AgencyMini      `json:"launch_service_provider" bson:"launch_service_provider"`
+	Rocket                         LL2RocketNormal    `json:"rocket" bson:"rocket"`
+	Mission                        LL2Mission         `json:"mission" bson:"mission"`
+	Pad                            LL2Pad             `json:"pad" bson:"pad"`
+	WebcastLive                    bool               `json:"webcast_live" bson:"webcast_live"`
+	Program                        []LL2ProgramNormal `json:"program" bson:"program"`
+	OrbitalLaunchAttemptCount      int                `json:"orbital_launch_attempt_count" bson:"orbital_launch_attempt_count"`
+	LocationLaunchAttemptCount     int                `json:"location_launch_attempt_count" bson:"location_launch_attempt_count"`
+	PadLaunchAttemptCount          int                `json:"pad_launch_attempt_count" bson:"pad_launch_attempt_count"`
+	AgencyLaunchAttemptCount       int                `json:"agency_launch_attempt_count" bson:"agency_launch_attempt_count"`
+	OrbitalLaunchAttemptCountYear  int                `json:"orbital_launch_attempt_count_year" bson:"orbital_launch_attempt_count_year"`
+	LocationLaunchAttemptCountYear int                `json:"location_launch_attempt_count_year" bson:"location_launch_attempt_count_year"`
+	PadLaunchAttemptCountYear      int                `json:"pad_launch_attempt_count_year" bson:"pad_launch_attempt_count_year"`
+	AgencyLaunchAttemptCountYear   int                `json:"agency_launch_attempt_count_year" bson:"agency_launch_attempt_count_year"`
 }
 
 type LL2AgencyMini struct {
-	ResponseMode string        `json:"response_mode"`
-	ID           int           `json:"id"`
-	URL          string        `json:"url"`
-	Name         string        `json:"name"`
-	Abbrev       string        `json:"abbrev"`
-	Type         LL2AgencyType `json:"type"`
+	ResponseMode string        `json:"response_mode" bson:"response_mode"`
+	ID           int           `json:"id" bson:"id"`
+	URL          string        `json:"url" bson:"url"`
+	Name         string        `json:"name" bson:"name"`
+	Abbrev       string        `json:"abbrev" bson:"abbrev"`
+	Type         LL2AgencyType `json:"type" bson:"type"`
 }
 
 type LL2AgencyType struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   int    `json:"id" bson:"id"`
+	Name string `json:"name" bson:"name"`
 }
 
 type LL2RocketNormal struct {
-	ID            int                   `json:"id"`
-	Configuration LL2LauncherConfigList `json:"configuration"`
+	ID            int                   `json:"id" bson:"id"`
+	Configuration LL2LauncherConfigList `json:"configuration" bson:"configuration"`
 }
 
 type LL2LauncherConfigList struct {
-	ResponseMode string                        `json:"response_mode"`
-	ID           int                           `json:"id"`
-	URL          string                        `json:"url"`
-	Name         string                        `json:"name"`
-	Families     []LL2LauncherConfigFamilyMini `json:"families"`
-	FullName     string                        `json:"full_name"`
-	Variant      string                        `json:"variant"`
+	ResponseMode string                        `json:"response_mode" bson:"response_mode"`
+	ID           int                           `json:"id" bson:"id"`
+	URL          string                        `json:"url" bson:"url"`
+	Name         string                        `json:"name" bson:"name"`
+	Families     []LL2LauncherConfigFamilyMini `json:"families" bson:"families"`
+	FullName     string                        `json:"full_name" bson:"full_name"`
+	Variant      string                        `json:"variant" bson:"variant"`
 }
 
 type LL2LauncherConfigFamilyMini struct {
-	ResponseMode string `json:"response_mode"`
-	ID           int    `json:"id"`
-	Name         string `json:"name"`
+	ResponseMode string `json:"response_mode" bson:"response_mode"`
+	ID           int    `json:"id" bson:"id"`
+	Name         string `json:"name" bson:"name"`
 }
 
 type LL2Mission struct {
-	ID          int                 `json:"id"`
-	Name        string              `json:"name"`
-	Description string              `json:"description"`
-	Type        string              `json:"type"`
-	Image       LL2Image            `json:"image"`
-	Orbit       LL2Orbit            `json:"orbit"`
-	Agencies    []LL2AgencyDetailed `json:"agencies"`
-	InfoURLs    []LL2InfoURL        `json:"info_urls"`
-	VidURLs     []LL2VidURL         `json:"vid_urls"`
+	ID          int                 `json:"id" bson:"id"`
+	Name        string              `json:"name" bson:"name"`
+	Description string              `json:"description" bson:"description"`
+	Type        string              `json:"type" bson:"type"`
+	Image       LL2Image            `json:"image" bson:"image"`
+	Orbit       LL2Orbit            `json:"orbit" bson:"orbit"`
+	Agencies    []LL2AgencyDetailed `json:"agencies" bson:"agencies"`
+	InfoURLs    []LL2InfoURL        `json:"info_urls" bson:"info_urls"`
+	VidURLs     []LL2VidURL         `json:"vid_urls" bson:"vid_urls"`
 }
 
 type LL2Orbit struct {
-	ID            int                  `json:"id"`
-	Name          string               `json:"name"`
-	Abbrev        string               `json:"abbrev"`
-	CelestialBody LL2CelestialBodyMini `json:"celestial_body"`
+	ID            int                  `json:"id" bson:"id"`
+	Name          string               `json:"name" bson:"name"`
+	Abbrev        string               `json:"abbrev" bson:"abbrev"`
+	CelestialBody LL2CelestialBodyMini `json:"celestial_body" bson:"celestial_body"`
 }
 
 type LL2CelestialBodyMini struct {
-	ResponseMode string `json:"response_mode"`
-	ID           int    `json:"id"`
-	Name         string `json:"name"`
+	ResponseMode string `json:"response_mode" bson:"response_mode"`
+	ID           int    `json:"id" bson:"id"`
+	Name         string `json:"name" bson:"name"`
 }
 
 type LL2AgencyDetailed struct {
-	ResponseMode                  string               `json:"response_mode"`
-	ID                            int                  `json:"id"`
-	URL                           string               `json:"url"`
-	Name                          string               `json:"name"`
-	Abbrev                        string               `json:"abbrev"`
-	Type                          LL2AgencyType        `json:"type"`
-	Featured                      bool                 `json:"featured"`
-	Country                       []LL2Country         `json:"country"`
-	Description                   string               `json:"description"`
-	Administrator                 string               `json:"administrator"`
-	FoundingYear                  int                  `json:"founding_year"`
-	Launchers                     string               `json:"launchers"`
-	Spacecraft                    string               `json:"spacecraft"`
-	Parent                        string               `json:"parent"`
-	Image                         LL2Image             `json:"image"`
-	Logo                          LL2Image             `json:"logo"`
-	SocialLogo                    LL2Image             `json:"social_logo"`
-	TotalLaunchCount              int                  `json:"total_launch_count"`
-	ConsecutiveSuccessfulLaunches int                  `json:"consecutive_successful_launches"`
-	SuccessfulLaunches            int                  `json:"successful_launches"`
-	FailedLaunches                int                  `json:"failed_launches"`
-	PendingLaunches               int                  `json:"pending_launches"`
-	ConsecutiveSuccessfulLandings int                  `json:"consecutive_successful_landings"`
-	SuccessfulLandings            int                  `json:"successful_landings"`
-	FailedLandings                int                  `json:"failed_landings"`
-	AttemptedLandings             int                  `json:"attempted_landings"`
-	SuccessfulLandingsSpacecraft  int                  `json:"successful_landings_spacecraft"`
-	FailedLandingsSpacecraft      int                  `json:"failed_landings_spacecraft"`
-	AttemptedLandingsSpacecraft   int                  `json:"attempted_landings_spacecraft"`
-	SuccessfulLandingsPayload     int                  `json:"successful_landings_payload"`
-	FailedLandingsPayload         int                  `json:"failed_landings_payload"`
-	AttemptedLandingsPayload      int                  `json:"attempted_landings_payload"`
-	InfoURL                       string               `json:"info_url"`
-	WikiURL                       string               `json:"wiki_url"`
-	SocialMediaLinks              []LL2SocialMediaLink `json:"social_media_links"`
+	ResponseMode                  string               `json:"response_mode" bson:"response_mode"`
+	ID                            int                  `json:"id" bson:"id"`
+	URL                           string               `json:"url" bson:"url"`
+	Name                          string               `json:"name" bson:"name"`
+	Abbrev                        string               `json:"abbrev" bson:"abbrev"`
+	Type                          LL2AgencyType        `json:"type" bson:"type"`
+	Featured                      bool                 `json:"featured" bson:"featured"`
+	Country                       []LL2Country         `json:"country" bson:"country"`
+	Description                   string               `json:"description" bson:"description"`
+	Administrator                 string               `json:"administrator" bson:"administrator"`
+	FoundingYear                  int                  `json:"founding_year" bson:"founding_year"`
+	Launchers                     string               `json:"launchers" bson:"launchers"`
+	Spacecraft                    string               `json:"spacecraft" bson:"spacecraft"`
+	Parent                        string               `json:"parent" bson:"parent"`
+	Image                         LL2Image             `json:"image" bson:"image"`
+	Logo                          LL2Image             `json:"logo" bson:"logo"`
+	SocialLogo                    LL2Image             `json:"social_logo" bson:"social_logo"`
+	TotalLaunchCount              int                  `json:"total_launch_count" bson:"total_launch_count"`
+	ConsecutiveSuccessfulLaunches int                  `json:"consecutive_successful_launches" bson:"consecutive_successful_launches"`
+	SuccessfulLaunches            int                  `json:"successful_launches" bson:"successful_launches"`
+	FailedLaunches                int                  `json:"failed_launches" bson:"failed_launches"`
+	PendingLaunches               int                  `json:"pending_launches" bson:"pending_launches"`
+	ConsecutiveSuccessfulLandings int                  `json:"consecutive_successful_landings" bson:"consecutive_successful_landings"`
+	SuccessfulLandings            int                  `json:"successful_landings" bson:"successful_landings"`
+	FailedLandings                int                  `json:"failed_landings" bson:"failed_landings"`
+	AttemptedLandings             int                  `json:"attempted_landings" bson:"attempted_landings"`
+	SuccessfulLandingsSpacecraft  int                  `json:"successful_landings_spacecraft" bson:"successful_landings_spacecraft"`
+	FailedLandingsSpacecraft      int                  `json:"failed_landings_spacecraft" bson:"failed_landings_spacecraft"`
+	AttemptedLandingsSpacecraft   int                  `json:"attempted_landings_spacecraft" bson:"attempted_landings_spacecraft"`
+	SuccessfulLandingsPayload     int                  `json:"successful_landings_payload" bson:"successful_landings_payload"`
+	FailedLandingsPayload         int                  `json:"failed_landings_payload" bson:"failed_landings_payload"`
+	AttemptedLandingsPayload      int                  `json:"attempted_landings_payload" bson:"attempted_landings_payload"`
+	InfoURL                       string               `json:"info_url" bson:"info_url"`
+	WikiURL                       string               `json:"wiki_url" bson:"wiki_url"`
+	SocialMediaLinks              []LL2SocialMediaLink `json:"social_media_links" bson:"social_media_links"`
 }
 
 type LL2Country struct {
-	ID                      int    `json:"id"`
-	Name                    string `json:"name"`
-	Alpha2Code              string `json:"alpha2_code"`
-	Alpha3Code              string `json:"alpha3_code"`
-	NationalityName         string `json:"nationality_name"`
-	NationalityNameComposed string `json:"nationality_name_composed"`
+	ID                      int    `json:"id" bson:"id"`
+	Name                    string `json:"name" bson:"name"`
+	Alpha2Code              string `json:"alpha2_code" bson:"alpha2_code"`
+	Alpha3Code              string `json:"alpha3_code" bson:"alpha3_code"`
+	NationalityName         string `json:"nationality_name" bson:"nationality_name"`
+	NationalityNameComposed string `json:"nationality_name_composed" bson:"nationality_name_composed"`
 }
 
 type LL2SocialMediaLink struct {
-	ID          int            `json:"id"`
-	SocialMedia LL2SocialMedia `json:"social_media"`
-	URL         string         `json:"url"`
+	ID          int            `json:"id" bson:"id"`
+	SocialMedia LL2SocialMedia `json:"social_media" bson:"social_media"`
+	URL         string         `json:"url" bson:"url"`
 }
 
 type LL2SocialMedia struct {
-	Id   int      `json:"id"`
-	Name string   `json:"name"`
-	URL  string   `json:"url"`
-	Logo LL2Image `json:"logo"`
+	Id   int      `json:"id" bson:"id"`
+	Name string   `json:"name" bson:"name"`
+	URL  string   `json:"url" bson:"url"`
+	Logo LL2Image `json:"logo" bson:"logo"`
 }
 
 type LL2InfoURL struct {
-	Priority     int            `json:"priority"`
-	Source       string         `json:"source"`
-	Title        string         `json:"title"`
-	Description  string         `json:"description"`
-	FeatureImage string         `json:"feature_image"`
-	URL          string         `json:"url"`
-	Type         LL2InfoURLType `json:"type"`
-	Language     LL2Language    `json:"language"`
+	Priority     int            `json:"priority" bson:"priority"`
+	Source       string         `json:"source" bson:"source"`
+	Title        string         `json:"title" bson:"title"`
+	Description  string         `json:"description" bson:"description"`
+	FeatureImage string         `json:"feature_image" bson:"feature_image"`
+	URL          string         `json:"url" bson:"url"`
+	Type         LL2InfoURLType `json:"type" bson:"type"`
+	Language     LL2Language    `json:"language" bson:"language"`
 }
 
 type LL2InfoURLType struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+	Id   int    `json:"id" bson:"id"`
+	Name string `json:"name" bson:"name"`
 }
 
 type LL2Language struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Code string `json:"code"`
+	ID   int    `json:"id" bson:"id"`
+	Name string `json:"name" bson:"name"`
+	Code string `json:"code" bson:"code"`
 }
 
 type LL2VidURL struct {
-	Priority     int           `json:"priority"`
-	Source       string        `json:"source"`
-	Publisher    string        `json:"publisher"`
-	Title        string        `json:"title"`
-	Description  string        `json:"description"`
-	FeatureImage string        `json:"feature_image"`
-	URL          string        `json:"url"`
-	Type         LL2VidURLType `json:"type"`
-	Language     LL2Language   `json:"language"`
-	StartTime    string        `json:"start_time"`
-	EndTime      string        `json:"end_time"`
-	Live         bool          `json:"live"`
+	Priority     int           `json:"priority" bson:"priority"`
+	Source       string        `json:"source" bson:"source"`
+	Publisher    string        `json:"publisher" bson:"publisher"`
+	Title        string        `json:"title" bson:"title"`
+	Description  string        `json:"description" bson:"description"`
+	FeatureImage string        `json:"feature_image" bson:"feature_image"`
+	URL          string        `json:"url" bson:"url"`
+	Type         LL2VidURLType `json:"type" bson:"type"`
+	Language     LL2Language   `json:"language" bson:"language"`
+	StartTime    string        `json:"start_time" bson:"start_time"`
+	EndTime      string        `json:"end_time" bson:"end_time"`
+	Live         bool          `json:"live" bson:"live"`
 }
 
 type LL2VidURLType struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+	Id   int    `json:"id" bson:"id"`
+	Name string `json:"name" bson:"name"`
 }
 
 type LL2Pad struct {
-	Id                        int               `json:"id"`
-	URL                       string            `json:"url"`
-	Active                    bool              `json:"active"`
-	Agencies                  []LL2AgencyNormal `json:"agencies"`
-	Name                      string            `json:"name"`
-	Image                     LL2Image          `json:"image"`
-	Description               string            `json:"description"`
-	InfoURL                   string            `json:"info_url"`
-	WikiURL                   string            `json:"wiki_url"`
-	MapURL                    string            `json:"map_url"`
-	Latitude                  float64           `json:"latitude"`
-	Longitude                 float64           `json:"longitude"`
-	Country                   LL2Country        `json:"country"`
-	MapImage                  string            `json:"map_image"`
-	TotalLaunchCount          int               `json:"total_launch_count"`
-	OrbitalLaunchAttemptCount int               `json:"orbital_launch_attempt_count"`
-	FastestTurnaround         string            `json:"fastest_turnaround"`
-	Location                  LL2Location       `json:"location"`
+	Id                        int               `json:"id" bson:"id"`
+	URL                       string            `json:"url" bson:"url"`
+	Active                    bool              `json:"active" bson:"active"`
+	Agencies                  []LL2AgencyNormal `json:"agencies" bson:"agencies"`
+	Name                      string            `json:"name" bson:"name"`
+	Image                     LL2Image          `json:"image" bson:"image"`
+	Description               string            `json:"description" bson:"description"`
+	InfoURL                   string            `json:"info_url" bson:"info_url"`
+	WikiURL                   string            `json:"wiki_url" bson:"wiki_url"`
+	MapURL                    string            `json:"map_url" bson:"map_url"`
+	Latitude                  float64           `json:"latitude" bson:"latitude"`
+	Longitude                 float64           `json:"longitude" bson:"longitude"`
+	Country                   LL2Country        `json:"country" bson:"country"`
+	MapImage                  string            `json:"map_image" bson:"map_image"`
+	TotalLaunchCount          int               `json:"total_launch_count" bson:"total_launch_count"`
+	OrbitalLaunchAttemptCount int               `json:"orbital_launch_attempt_count" bson:"orbital_launch_attempt_count"`
+	FastestTurnaround         string            `json:"fastest_turnaround" bson:"fastest_turnaround"`
+	Location                  LL2Location       `json:"location" bson:"location"`
 }
 
 type LL2Location struct {
-	ResponseMode      string                   `json:"response_mode"`
-	ID                int                      `json:"id"`
-	Name              string                   `json:"name"`
-	URL               string                   `json:"url"`
-	CelestialBody     LL2CelestialBodyDetailed `json:"celestial_body"`
-	Active            bool                     `json:"active"`
-	Country           LL2Country               `json:"country"`
-	Description       string                   `json:"description"`
-	Image             LL2Image                 `json:"image"`
-	MapImage          string                   `json:"map_image"`
-	Latitude          float64                  `json:"latitude"`
-	Longitude         float64                  `json:"longitude"`
-	TimezoneName      string                   `json:"timezone_name"`
-	TotalLaunchCount  int                      `json:"total_launch_count"`
-	TotalLandingCount int                      `json:"total_landing_count"`
+	ResponseMode      string                   `json:"response_mode" bson:"response_mode"`
+	ID                int                      `json:"id" bson:"id"`
+	Name              string                   `json:"name" bson:"name"`
+	URL               string                   `json:"url" bson:"url"`
+	CelestialBody     LL2CelestialBodyDetailed `json:"celestial_body" bson:"celestial_body"`
+	Active            bool                     `json:"active" bson:"active"`
+	Country           LL2Country               `json:"country" bson:"country"`
+	Description       string                   `json:"description" bson:"description"`
+	Image             LL2Image                 `json:"image" bson:"image"`
+	MapImage          string                   `json:"map_image" bson:"map_image"`
+	Latitude          float64                  `json:"latitude" bson:"latitude"`
+	Longitude         float64                  `json:"longitude" bson:"longitude"`
+	TimezoneName      string                   `json:"timezone_name" bson:"timezone_name"`
+	TotalLaunchCount  int                      `json:"total_launch_count" bson:"total_launch_count"`
+	TotalLandingCount int                      `json:"total_landing_count" bson:"total_landing_count"`
 }
 
 type LL2CelestialBodyDetailed struct {
 	LL2CelestialBodyMini   `bson:",inline"`
-	Type                   LL2CelestialBodyType `json:"type"`
-	Diameter               float64              `json:"diameter"`
-	Mass                   float64              `json:"mass"`
-	Gravity                float64              `json:"gravity"`
-	LengthOfDay            string               `json:"length_of_day"`
-	Atmosphere             bool                 `json:"atmosphere"`
-	Image                  LL2Image             `json:"image"`
-	Description            string               `json:"description"`
-	WikiURL                string               `json:"wiki_url"`
-	TotalAttemptedLandes   int                  `json:"total_attempted_landes"`
-	SuccessfulLaunches     int                  `json:"successful_launches"`
-	FailedLaunches         int                  `json:"failed_launches"`
-	TotalAttemptedLandings int                  `json:"total_attempted_landings"`
-	SuccessfulLandings     int                  `json:"successful_landings"`
-	FailedLandings         int                  `json:"failed_landings"`
+	Type                   LL2CelestialBodyType `json:"type" bson:"type"`
+	Diameter               float64              `json:"diameter" bson:"diameter"`
+	Mass                   float64              `json:"mass" bson:"mass"`
+	Gravity                float64              `json:"gravity" bson:"gravity"`
+	LengthOfDay            string               `json:"length_of_day" bson:"length_of_day"`
+	Atmosphere             bool                 `json:"atmosphere" bson:"atmosphere"`
+	Image                  LL2Image             `json:"image" bson:"image"`
+	Description            string               `json:"description" bson:"description"`
+	WikiURL                string               `json:"wiki_url" bson:"wiki_url"`
+	TotalAttemptedLandes   int                  `json:"total_attempted_landes" bson:"total_attempted_landes"`
+	SuccessfulLaunches     int                  `json:"successful_launches" bson:"successful_launches"`
+	FailedLaunches         int                  `json:"failed_launches" bson:"failed_launches"`
+	TotalAttemptedLandings int                  `json:"total_attempted_landings" bson:"total_attempted_landings"`
+	SuccessfulLandings     int                  `json:"successful_landings" bson:"successful_landings"`
+	FailedLandings         int                  `json:"failed_landings" bson:"failed_landings"`
 }
 
 type LL2CelestialBodyType struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   int    `json:"id" bson:"id"`
+	Name string `json:"name" bson:"name"`
 }
 
 type LL2AgencyNormal struct {
 	LL2AgencyMini `bson:",inline"`
-	Featured      bool         `json:"featured"`
-	Country       []LL2Country `json:"country"`
-	Description   string       `json:"description"`
-	Administrator string       `json:"administrator"`
-	FoundingYear  int          `json:"founding_year"`
-	Launchers     string       `json:"launchers"`
-	Spacecraft    string       `json:"spacecraft"`
-	Parent        string       `json:"parent"`
-	Image         LL2Image     `json:"image"`
-	Logo          LL2Image     `json:"logo"`
-	SocialLogo    LL2Image     `json:"social_logo"`
+	Featured      bool         `json:"featured" bson:"featured"`
+	Country       []LL2Country `json:"country" bson:"country"`
+	Description   string       `json:"description" bson:"description"`
+	Administrator string       `json:"administrator" bson:"administrator"`
+	FoundingYear  int          `json:"founding_year" bson:"founding_year"`
+	Launchers     string       `json:"launchers" bson:"launchers"`
+	Spacecraft    string       `json:"spacecraft" bson:"spacecraft"`
+	Parent        string       `json:"parent" bson:"parent"`
+	Image         LL2Image     `json:"image" bson:"image"`
+	Logo          LL2Image     `json:"logo" bson:"logo"`
+	SocialLogo    LL2Image     `json:"social_logo" bson:"social_logo"`
 }
 
 type LL2ProgramNormal struct {
-	ResponseMode   string            `json:"response_mode"`
-	ID             int               `json:"id"`
-	URL            string            `json:"url"`
-	Name           string            `json:"name"`
-	Image          LL2Image          `json:"image"`
-	InfoUrl        string            `json:"info_url"`
-	WikiUrl        string            `json:"wiki_url"`
-	Description    string            `json:"description"`
-	Agencies       []LL2AgencyMini   `json:"agencies"`
-	StartDate      string            `json:"start_date"`
-	EndDate        string            `json:"end_date"`
-	MissionPatches []LL2MissionPatch `json:"mission_patches"`
-	Type           LL2ProgramType    `json:"type"`
+	ResponseMode   string            `json:"response_mode" bson:"response_mode"`
+	ID             int               `json:"id" bson:"id"`
+	URL            string            `json:"url" bson:"url"`
+	Name           string            `json:"name" bson:"name"`
+	Image          LL2Image          `json:"image" bson:"image"`
+	InfoUrl        string            `json:"info_url" bson:"info_url"`
+	WikiUrl        string            `json:"wiki_url" bson:"wiki_url"`
+	Description    string            `json:"description" bson:"description"`
+	Agencies       []LL2AgencyMini   `json:"agencies" bson:"agencies"`
+	StartDate      string            `json:"start_date" bson:"start_date"`
+	EndDate        string            `json:"end_date" bson:"end_date"`
+	MissionPatches []LL2MissionPatch `json:"mission_patches" bson:"mission_patches"`
+	Type           LL2ProgramType    `json:"type" bson:"type"`
 }
 type LL2MissionPatch struct {
-	ID           int           `json:"id"`
-	Name         string        `json:"name"`
-	Priority     int           `json:"priority"`
-	ImageUrl     string        `json:"image_url"`
-	Agency       LL2AgencyMini `json:"agency"`
-	ResponseMode string        `json:"response_mode"`
+	ID           int           `json:"id" bson:"id"`
+	Name         string        `json:"name" bson:"name"`
+	Priority     int           `json:"priority" bson:"priority"`
+	ImageUrl     string        `json:"image_url" bson:"image_url"`
+	Agency       LL2AgencyMini `json:"agency" bson:"agency"`
+	ResponseMode string        `json:"response_mode" bson:"response_mode"`
 }
 
 type LL2ProgramType struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   int    `json:"id" bson:"id"`
+	Name string `json:"name" bson:"name"`
 }
 
 type LL2LaunchDetailed struct {
 	LL2LaunchNormal `bson:",inline"`
-	FlightclubUrl   string             `json:"flightclub_url"`
-	Updates         []LL2Update        `json:"updates"`
-	InfoURLs        []LL2InfoURL       `json:"info_urls"`
-	VidURLs         []LL2VidURL        `json:"vid_urls"`
-	Timeline        []LL2TimelineEvent `json:"timeline"`
-	PadTurnaround   string             `json:"pad_turnaround"`
-	MissionPatches  []LL2MissionPatch  `json:"mission_patches"`
+	FlightclubUrl   string             `json:"flightclub_url" bson:"flightclub_url"`
+	Updates         []LL2Update        `json:"updates" bson:"updates"`
+	InfoURLs        []LL2InfoURL       `json:"info_urls" bson:"info_urls"`
+	VidURLs         []LL2VidURL        `json:"vid_urls" bson:"vid_urls"`
+	Timeline        []LL2TimelineEvent `json:"timeline" bson:"timeline"`
+	PadTurnaround   string             `json:"pad_turnaround" bson:"pad_turnaround"`
+	MissionPatches  []LL2MissionPatch  `json:"mission_patches" bson:"mission_patches"`
 }
 
 type LL2Update struct {
-	ID           int    `json:"id"`
-	ProfileImage string `json:"profile_image"`
-	Comment      string `json:"comment"`
-	InfoUrl      string `json:"info_url"`
-	CreatedBy    string `json:"created_by"`
-	CreatedOn    string `json:"created_on"`
+	ID           int    `json:"id" bson:"id"`
+	ProfileImage string `json:"profile_image" bson:"profile_image"`
+	Comment      string `json:"comment" bson:"comment"`
+	InfoUrl      string `json:"info_url" bson:"info_url"`
+	CreatedBy    string `json:"created_by" bson:"created_by"`
+	CreatedOn    string `json:"created_on" bson:"created_on"`
 }
 
 type LL2TimelineEvent struct {
-	RelativeTime string               `json:"relative_time"`
-	Type         LL2TimelineEventType `json:"type"`
+	RelativeTime string               `json:"relative_time" bson:"relative_time"`
+	Type         LL2TimelineEventType `json:"type" bson:"type"`
 }
 
 type LL2TimelineEventType struct {
-	ID          int    `json:"id"`
-	Abbrev      string `json:"abbrev"`
-	Description string `json:"description"`
+	ID          int    `json:"id" bson:"id"`
+	Abbrev      string `json:"abbrev" bson:"abbrev"`
+	Description string `json:"description" bson:"description"`
 }
