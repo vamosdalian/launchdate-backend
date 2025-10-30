@@ -66,7 +66,7 @@ type LL2NetPrecision struct {
 }
 
 type LL2LaunchNormal struct {
-	LL2LaunchBasic
+	LL2LaunchBasic                 `bson:",inline"`
 	Probability                    int                `json:"probability"`
 	WeatherConcerns                string             `json:"weather_concerns"`
 	FailReason                     string             `json:"failreason"`
@@ -289,7 +289,7 @@ type LL2Location struct {
 }
 
 type LL2CelestialBodyDetailed struct {
-	LL2CelestialBodyMini
+	LL2CelestialBodyMini   `bson:",inline"`
 	Type                   LL2CelestialBodyType `json:"type"`
 	Diameter               float64              `json:"diameter"`
 	Mass                   float64              `json:"mass"`
@@ -313,7 +313,7 @@ type LL2CelestialBodyType struct {
 }
 
 type LL2AgencyNormal struct {
-	LL2AgencyMini
+	LL2AgencyMini `bson:",inline"`
 	Featured      bool         `json:"featured"`
 	Country       []LL2Country `json:"country"`
 	Description   string       `json:"description"`
@@ -357,14 +357,14 @@ type LL2ProgramType struct {
 }
 
 type LL2LaunchDetailed struct {
-	LL2LaunchNormal
-	FlightclubUrl  string             `json:"flightclub_url"`
-	Updates        []LL2Update        `json:"updates"`
-	InfoURLs       []LL2InfoURL       `json:"info_urls"`
-	VidURLs        []LL2VidURL        `json:"vid_urls"`
-	Timeline       []LL2TimelineEvent `json:"timeline"`
-	PadTurnaround  string             `json:"pad_turnaround"`
-	MissionPatches []LL2MissionPatch  `json:"mission_patches"`
+	LL2LaunchNormal `bson:",inline"`
+	FlightclubUrl   string             `json:"flightclub_url"`
+	Updates         []LL2Update        `json:"updates"`
+	InfoURLs        []LL2InfoURL       `json:"info_urls"`
+	VidURLs         []LL2VidURL        `json:"vid_urls"`
+	Timeline        []LL2TimelineEvent `json:"timeline"`
+	PadTurnaround   string             `json:"pad_turnaround"`
+	MissionPatches  []LL2MissionPatch  `json:"mission_patches"`
 }
 
 type LL2Update struct {
@@ -377,8 +377,8 @@ type LL2Update struct {
 }
 
 type LL2TimelineEvent struct {
+	RelativeTime string               `json:"relative_time"`
 	Type         LL2TimelineEventType `json:"type"`
-	RelativeTime int                  `json:"relative_time"`
 }
 
 type LL2TimelineEventType struct {

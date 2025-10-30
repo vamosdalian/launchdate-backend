@@ -16,6 +16,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const LL2COLLECTION = "ll2_launch"
+
 type LL2Service struct {
 	mongoClient        *db.MongoDB
 	LL2URLPrefix       string
@@ -56,7 +58,7 @@ func (s *LL2Service) updateLaunchesAsync() error {
 		}
 
 		rl.Wait()
-		launches, err := s.LoadLaunches(100, offset)
+		launches, err := s.LoadLaunches(10, offset)
 		if err != nil {
 			return err
 		}
@@ -71,7 +73,7 @@ func (s *LL2Service) updateLaunchesAsync() error {
 				"$set": launch,
 			}
 			opts := options.Update().SetUpsert(true)
-			_, err := s.mongoClient.Collection("ll2_launch").UpdateOne(context.Background(), filter, update, opts)
+			_, err := s.mongoClient.Collection(LL2COLLECTION).UpdateOne(context.Background(), filter, update, opts)
 			if err != nil {
 				return err
 			}
@@ -97,6 +99,38 @@ func (s *LL2Service) LoadLaunches(limit, offset int) (*models.LL2Response, error
 	body, _ := io.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &launches)
 	if err != nil {
+		return nil, err
+	}
+
+	return launches, nil
+}
+
+func (s *LL2Service) GetLaunchesFromDB(limit, offset int) ([]models.LL2LaunchNormal, error) {
+	collection := s.mongoClient.Collection(LL2COLLECTION)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	findOptions := options.Find()
+	findOptions.SetLimit(int64(limit))
+	findOptions.SetSkip(int64(offset))
+	findOptions.SetSort(map[string]int{"net": 1}) // Sort by net ascending
+
+	cursor, err := collection.Find(ctx, map[string]any{}, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var launches []models.LL2LaunchNormal
+	for cursor.Next(ctx) {
+		var launch models.LL2LaunchNormal
+		if err := cursor.Decode(&launch); err != nil {
+			return nil, err
+		}
+		launches = append(launches, launch)
+	}
+
+	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
 

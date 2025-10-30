@@ -1,9 +1,20 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
 
 func (h *Handler) GetLL2Launches(c *gin.Context) {
-	// Implementation for fetching LL2 launches goes here
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	launches, err := h.ll2Server.GetLaunchesFromDB(limit, offset)
+	if err != nil {
+		h.Error(c, "failed to get launches: "+err.Error())
+		return
+	}
+	h.Json(c, launches)
 }
 
 func (h *Handler) StartLL2LaunchUpdate(c *gin.Context) {

@@ -14,8 +14,12 @@ func SetupRouter(handler *Handler) *gin.Engine {
 
 	apiV1 := router.Group("/api/v1")
 	{
-		apiV1.GET("/launches", handler.GetLL2Launches)
-		apiV1.POST("/launches/updatell2", handler.StartLL2LaunchUpdate)
+		apiV1.GET("/health", handler.Health)
+	}
+	ll2 := apiV1.Group("/ll2")
+	{
+		ll2.GET("/launches", handler.GetLL2Launches)
+		ll2.POST("/launches/update", handler.StartLL2LaunchUpdate)
 	}
 
 	return router

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/vamosdalian/launchdate-backend/internal/config"
 	"github.com/vamosdalian/launchdate-backend/internal/db"
@@ -20,4 +21,8 @@ func NewHandler(logger *logrus.Logger, cfg *config.Config, db *db.MongoDB) *Hand
 		logger:    logger,
 		ll2Server: ll2server,
 	}
+}
+
+func (h *Handler) Health(c *gin.Context) {
+	h.Json(c, "ok")
 }
