@@ -12,8 +12,8 @@ func TestLoadLaunches(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if len(launches) != 1 {
-		t.Fatalf("Expected 1 launch, got %d", len(launches))
+	if len(launches.Results) != 1 {
+		t.Fatalf("Expected 1 launch, got %d", len(launches.Results))
 	}
 	t.Logf("%+v", launches)
 }
