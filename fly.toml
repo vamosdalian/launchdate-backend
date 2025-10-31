@@ -3,7 +3,7 @@ primary_region = "sin"
 
 [env]
 SERVER_PORT = "8080"
-SERVER_HOST = ""
+SERVER_HOST = "0.0.0.0"
 SERVER_ENVIRONMENT = "production"
 GIN_MODE="release"
 MONGODB_DATABASE = "launchdate_db"

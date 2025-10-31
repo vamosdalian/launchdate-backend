@@ -38,7 +38,7 @@ func main() {
 
 	// Create HTTP server
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%s", cfg.Server.Port),
+		Addr:         fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port),
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
