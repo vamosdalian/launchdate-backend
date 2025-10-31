@@ -9,3 +9,12 @@ GIN_MODE="release"
 MONGODB_DATABASE = "launchdate_db"
 LL2_URL_PREFIX = "https://ll.thespacedevs.com"
 LL2_REQUEST_INTERVAL = "5"
+
+[[services.http_checks]]
+    interval = "30s"
+    grace_period = "5s"
+    method = "get"
+    path = "/api/v1/health"
+    protocol = "http"
+    timeout = "2s"
+    tls_skip_verify = false
