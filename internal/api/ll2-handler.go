@@ -85,3 +85,43 @@ func (h *Handler) StartLL2LauncherFamilyUpdate(c *gin.Context) {
 	}
 	h.Success(c, "ok")
 }
+
+func (h *Handler) StartLL2LocationUpdate(c *gin.Context) {
+	err := h.ll2Server.UpdateLocationsAsync(true)
+	if err != nil {
+		h.Error(c, "start error:"+err.Error())
+		return
+	}
+	h.Success(c, "ok")
+}
+
+func (h *Handler) GetLL2Locations(c *gin.Context) {
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	locations, err := h.ll2Server.GetLocationsFromDB(limit, offset)
+	if err != nil {
+		h.Error(c, "failed to get locations: "+err.Error())
+		return
+	}
+	h.Json(c, locations)
+}
+
+func (h *Handler) GetLL2Pads(c *gin.Context) {
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	pads, err := h.ll2Server.GetPadsFromDB(limit, offset)
+	if err != nil {
+		h.Error(c, "failed to get pads: "+err.Error())
+		return
+	}
+	h.Json(c, pads)
+}
+
+func (h *Handler) StartLL2PadUpdate(c *gin.Context) {
+	err := h.ll2Server.UpdatePadsAsync(true)
+	if err != nil {
+		h.Error(c, "start error:"+err.Error())
+		return
+	}
+	h.Success(c, "ok")
+}

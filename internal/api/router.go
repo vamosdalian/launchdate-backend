@@ -25,6 +25,10 @@ func SetupRouter(handler *Handler) *gin.Engine {
 			ll2.GET("/launchers", handler.GetLL2Launchers)
 			ll2.POST("/launchers/update", handler.StartLL2LauncherUpdate)
 			ll2.POST("/launcher-families/update", handler.StartLL2LauncherFamilyUpdate)
+			ll2.GET("/locations", handler.GetLL2Locations)
+			ll2.POST("/locations/update", handler.StartLL2LocationUpdate)
+			ll2.GET("/pads", handler.GetLL2Pads)
+			ll2.POST("/pads/update", handler.StartLL2PadUpdate)
 		}
 	}
 
