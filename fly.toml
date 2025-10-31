@@ -5,16 +5,27 @@ primary_region = "sin"
 SERVER_PORT = "8080"
 SERVER_HOST = "0.0.0.0"
 SERVER_ENVIRONMENT = "production"
-GIN_MODE="release"
+GIN_MODE = "release"
 MONGODB_DATABASE = "launchdate_db"
 LL2_URL_PREFIX = "https://ll.thespacedevs.com"
 LL2_REQUEST_INTERVAL = "5"
 
+[[services]]
+internal_port = 8080
+
+[[services.ports]]
+handlers = ["http"]
+port = 80
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443
+
 [[services.http_checks]]
-    interval = "30s"
-    grace_period = "5s"
-    method = "get"
-    path = "/api/v1/health"
-    protocol = "http"
-    timeout = "2s"
-    tls_skip_verify = false
+interval = "30s"
+grace_period = "5s"
+method = "get"
+path = "/api/v1/health"
+protocol = "http"
+timeout = "2s"
+tls_skip_verify = false
