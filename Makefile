@@ -27,17 +27,6 @@ docker-build: ## Build Docker image
 	@echo "Building Docker image..."
 	@docker build -t launchdate-backend:latest .
 
-migrate-up: ## Run database migrations
-	@echo "Running migrations..."
-	@migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/launchdate?sslmode=disable" up
-
-migrate-down: ## Rollback database migrations
-	@echo "Rolling back migrations..."
-	@migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/launchdate?sslmode=disable" down
-
-migrate-create: ## Create a new migration (usage: make migrate-create NAME=migration_name)
-	@migrate create -ext sql -dir migrations -seq $(NAME)
-
 lint: ## Run linter
 	@echo "Running linter..."
 	@golangci-lint run

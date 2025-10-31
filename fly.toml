@@ -1,0 +1,11 @@
+app = "launchdate-backend"
+primary_region = "sin"
+
+[env]
+SERVER_PORT = "8080"
+SERVER_HOST = ""
+SERVER_ENVIRONMENT = "production"
+GIN_MODE="release"
+MONGODB_DATABASE = "launchdate_db"
+LL2_URL_PREFIX = "https://ll.thespacedevs.com"
+LL2_REQUEST_INTERVAL = "5"
