@@ -45,3 +45,43 @@ func (h *Handler) GetLL2Angecy(c *gin.Context) {
 	}
 	h.Json(c, angecies)
 }
+
+func (h *Handler) GetLL2LauncherFamilies(c *gin.Context) {
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	families, err := h.ll2Server.GetLauncherFamiliesFromDB(limit, offset)
+	if err != nil {
+		h.Error(c, "failed to get launcher families: "+err.Error())
+		return
+	}
+	h.Json(c, families)
+}
+
+func (h *Handler) GetLL2Launchers(c *gin.Context) {
+	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	launchers, err := h.ll2Server.GetLaunchersFromDB(limit, offset)
+	if err != nil {
+		h.Error(c, "failed to get launchers: "+err.Error())
+		return
+	}
+	h.Json(c, launchers)
+}
+
+func (h *Handler) StartLL2LauncherUpdate(c *gin.Context) {
+	err := h.ll2Server.UpdateLaunchersAsync(true)
+	if err != nil {
+		h.Error(c, "start error:"+err.Error())
+		return
+	}
+	h.Success(c, "ok")
+}
+
+func (h *Handler) StartLL2LauncherFamilyUpdate(c *gin.Context) {
+	err := h.ll2Server.UpdateLauncherFamiliesAsync(true)
+	if err != nil {
+		h.Error(c, "start error:"+err.Error())
+		return
+	}
+	h.Success(c, "ok")
+}

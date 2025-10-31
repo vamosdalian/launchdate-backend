@@ -84,25 +84,10 @@ func (s *LL2Service) updateLaunchesAsync() error {
 }
 
 func (s *LL2Service) LoadLaunches(limit, offset int) (*models.LL2Response, error) {
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
-
-	url := fmt.Sprintf("%s/2.3.0/launches?limit=%d&offset=%d&mode=detailed", s.LL2URLPrefix, limit, offset)
-	resp, err := client.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
 	var launches *models.LL2Response
-	body, _ := io.ReadAll(resp.Body)
-	err = json.Unmarshal(body, &launches)
-	if err != nil {
-		return nil, err
-	}
+	err := s.LoadDataFromAPI("launches", limit, offset, launches)
 
-	return launches, nil
+	return launches, err
 }
 
 func (s *LL2Service) GetLaunchesFromDB(limit, offset int) ([]models.LL2LaunchNormal, error) {
@@ -139,7 +124,7 @@ func (s *LL2Service) GetLaunchesFromDB(limit, offset int) ([]models.LL2LaunchNor
 
 func (s *LL2Service) LoadAngecyFromAPI(limit, offset int) (*models.LL2AngecyResponse, error) {
 	var launches *models.LL2AngecyResponse
-	err := s.LoadDataFromAPI("angecies", limit, offset, &launches)
+	err := s.LoadDataFromAPI("agencies", limit, offset, &launches)
 	return launches, err
 }
 
@@ -152,6 +137,9 @@ func (s *LL2Service) LoadDataFromAPI(endpoint string, limit, offset int, payload
 	resp, err := client.Get(url)
 	if err != nil {
 		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("LL2 API returned status code %d, url:%s", resp.StatusCode, url)
 	}
 	defer resp.Body.Close()
 
@@ -213,7 +201,7 @@ func (s *LL2Service) UpdateAngecy(async bool) error {
 }
 
 func (s *LL2Service) updateAngecyAsync() error {
-	count := 1
+	count := 10
 	offset := 0
 	rl := util.NewRateLimit(time.Duration(s.LL2RequestInterval) * time.Second)
 	logrus.Info("Starting LL2 angecy update...")

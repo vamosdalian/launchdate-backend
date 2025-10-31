@@ -92,22 +92,6 @@ type LL2RocketNormal struct {
 	Configuration LL2LauncherConfigList `json:"configuration" bson:"configuration"`
 }
 
-type LL2LauncherConfigList struct {
-	ResponseMode string                        `json:"response_mode" bson:"response_mode"`
-	ID           int                           `json:"id" bson:"id"`
-	URL          string                        `json:"url" bson:"url"`
-	Name         string                        `json:"name" bson:"name"`
-	Families     []LL2LauncherConfigFamilyMini `json:"families" bson:"families"`
-	FullName     string                        `json:"full_name" bson:"full_name"`
-	Variant      string                        `json:"variant" bson:"variant"`
-}
-
-type LL2LauncherConfigFamilyMini struct {
-	ResponseMode string `json:"response_mode" bson:"response_mode"`
-	ID           int    `json:"id" bson:"id"`
-	Name         string `json:"name" bson:"name"`
-}
-
 type LL2Mission struct {
 	ID          int                 `json:"id" bson:"id"`
 	Name        string              `json:"name" bson:"name"`

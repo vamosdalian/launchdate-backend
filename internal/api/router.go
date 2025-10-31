@@ -15,13 +15,17 @@ func SetupRouter(handler *Handler) *gin.Engine {
 	apiV1 := router.Group("/api/v1")
 	{
 		apiV1.GET("/health", handler.Health)
-	}
-	ll2 := apiV1.Group("/ll2")
-	{
-		ll2.GET("/launches", handler.GetLL2Launches)
-		ll2.POST("/launches/update", handler.StartLL2LaunchUpdate)
-		ll2.GET("/angecies", handler.GetLL2Angecy)
-		ll2.POST("/angecies/update", handler.StartLL2AngecyUpdate)
+		ll2 := apiV1.Group("/ll2")
+		{
+			ll2.GET("/launches", handler.GetLL2Launches)
+			ll2.POST("/launches/update", handler.StartLL2LaunchUpdate)
+			ll2.GET("/angecies", handler.GetLL2Angecy)
+			ll2.POST("/angecies/update", handler.StartLL2AngecyUpdate)
+			ll2.GET("/launcher-families", handler.GetLL2LauncherFamilies)
+			ll2.GET("/launchers", handler.GetLL2Launchers)
+			ll2.POST("/launchers/update", handler.StartLL2LauncherUpdate)
+			ll2.POST("/launcher-families/update", handler.StartLL2LauncherFamilyUpdate)
+		}
 	}
 
 	return router
